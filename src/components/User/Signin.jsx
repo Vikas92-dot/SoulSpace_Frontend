@@ -1,20 +1,32 @@
 import axios from "axios";
 import { useState } from "react";
 import api from "../api";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+// import SetCookie from "./SetCookie";
+import Cookies from "js-cookie";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { setUser } from "../redux-config/UserSlice";
+
 
 function Signin(){
   const[email,setEmail] = useState("");
   const[password,setPassword] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleSubmit=(event)=>{
+  const handleSubmit= async (event)=>{
+    try{
     event.preventDefault();
-    axios.post(api.USER_LOGIN,{email,password})
-    .then((response)=>{
-          console.log(response.data);
-        navigate('/UserDashboard');
-    })
+    let response = await axios.post(api.USER_LOGIN,{email,password});
+    dispatch(setUser(response.data));
+    navigate('/UserDashboard');
+    }
+    catch(err){
+      console.log(err);
+      toast.error("Invalid User")
+      
+    }
   }
     return<>
     <section className="d-flex align-items-center justify-content-center min-vh-100 bg-light">
@@ -80,9 +92,7 @@ function Signin(){
               <div className="card-footer text-center py-3">
                 <p className="mb-0">
                   Don't have an account?{" "}
-                  <a href="#!" className="text-primary">
-                    Register
-                  </a>
+                  <Link to="/register" className="text-primary">Register</Link>
                 </p>
               </div>
             </div>

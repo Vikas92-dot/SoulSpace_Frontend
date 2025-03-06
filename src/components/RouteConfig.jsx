@@ -4,6 +4,8 @@ import Register from "./User/Register";
 import UserDashboard from "./User/UserDashboard";
 import Signin from "./User/Signin";
 import Home from "./Home";
+import MeditationPage from "./Meditations";
+import Auth from "./auth/Auth";
 
 function RouteConfig(){
     return<>
@@ -12,7 +14,8 @@ function RouteConfig(){
         <Route path='/register' element={<Register/>}/>
         <Route path='/Verify-otp' element={<VerifyOTP/>}/>
         <Route path="/Signin" element={<Signin/>}/>
-        <Route path="/UserDashboard" element={<UserDashboard/>}/>
+        <Route path="/UserDashboard" element={<Auth><UserDashboard /></Auth>}/>
+        <Route path="/Meditations" element={<Auth><MeditationPage/></Auth>}/>
     </Routes>
     </>
 }

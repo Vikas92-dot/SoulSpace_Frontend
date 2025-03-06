@@ -6,31 +6,28 @@ import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, L
 import { Box, Drawer, List, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import axios from "axios";
 import api from "../api";
+import { useDispatch } from "react-redux";
+import {signOut} from '../redux-config/UserSlice'
+import { useNavigate } from "react-router-dom";
 
 function UserDashboard() {
   const [quote, setQuote] = useState("“Believe in yourself and all that you are.”");
   const [allMeditationData, setAllMeditationData] = useState([]); // Stores full data
   const [meditationData, setMeditationData] = useState([]); // Stores paginated data
   const [currentPage, setCurrentPage] = useState(0); // Track current page
-  const [userLevel, setUserLevel] = useState(""); // User level (Beginner, Intermediate, Advanced)
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const sessionsPerPage = 7; // Show 7 sessions per page
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchMeditationProgress = async () => {
       try {
         const userId = 39; // Replace with dynamic user ID
-        const response = await axios(`${api.USER_DATA}/${userId}`);
-        const userData = response.data;
-
-        // Set user level
-        setUserLevel(userData.level);
-
-        // Fetch meditation progress data
-        const meditationResponse = await axios(`${api.MEDITATION_TRACKER}/${userId}`);
-        console.log(meditationResponse.data);
+        const response = await axios(`${api.MEDITATION_TRACKER}/${userId}`);
+        console.log(response.data);
         
-        let data = meditationResponse.data;
+        let data = response.data;
 
         // Sort sessions by date (latest first)
         data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -44,11 +41,11 @@ function UserDashboard() {
         setAllMeditationData(formattedData);
         setMeditationData(formattedData.slice(0, sessionsPerPage)); // Show first 7 sessions
       } catch (error) {
-        console.error("Error fetching user data or meditation data:", error);
+        console.error("Error fetching meditation data:", error);
       }
     };
 
-    fetchUserData();
+    fetchMeditationProgress();
   }, []);
 
   // Handle Next Page
@@ -70,7 +67,16 @@ function UserDashboard() {
       setCurrentPage(prevPage);
     }
   };
+  const menuItems = [
+      { text: "Dashboard", icon: <Home />, path: "/UserDashboard" },
+      { text: "Journal", icon: <BookOpen />, path: "/journal" },
+      { text: "Affirmations", icon: <MessageSquare />, path: "/affirmations" },
+      { text: "Community", icon: <MessageSquare />, path: "/community" },
+      { text: "Notifications", icon: <Bell />, path: "/notifications" },
+      { text: "Profile", icon: <User />, path: "/profile" }
+    ];
 
+  
   return (
     <Box sx={{ display: "flex", height: "100vh", bgcolor: "#f5f5f5" }}>
       {/* Sidebar Menu */}
@@ -83,18 +89,14 @@ function UserDashboard() {
         }}
       >
         <List>
-          {[{ text: "Dashboard", icon: <Home /> }, { text: "Meditation Tracker", icon: <Heart /> },
-            { text: "Journal", icon: <BookOpen /> }, { text: "Affirmations", icon: <MessageSquare /> },
-            { text: "Community", icon: <MessageSquare /> }, { text: "Notifications", icon: <Bell /> },
-            { text: "Profile", icon: <User /> }
-          ].map((item, index) => (
-            <ListItemButton key={index}>
-              <ListItemIcon sx={{ color: "primary.main" }}>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} />
-            </ListItemButton>
-          ))}
+          {menuItems.map((item, index) => (
+                      <ListItemButton key={index} onClick={() => navigate(item.path)}>
+                        <ListItemIcon sx={{ color: "primary.main" }}>{item.icon}</ListItemIcon>
+                        <ListItemText primary={item.text} />
+                      </ListItemButton>
+                    ))}
           {/* Logout Button */}
-          <ListItemButton sx={{ color: "error.main" }}>
+          <ListItemButton onClick={()=>dispatch(signOut())} sx={{ color: "error.main" }}>
             <ListItemIcon>
               <LogOut color="red"/>
             </ListItemIcon>
@@ -106,12 +108,7 @@ function UserDashboard() {
       {/* Main Dashboard Section */}
       <Box sx={{ flex: 1, p: 4 }}>
         <Typography variant="h4" fontWeight="bold" gutterBottom>
-          Good Morning, [User Name] 🌞
-        </Typography>
-
-        {/* User Level */}
-        <Typography variant="h6" color="textSecondary" gutterBottom>
-          Level: {userLevel || "Loading..."} {/* Display user level */}
+          Good Morning, {} 🌞
         </Typography>
 
         {/* Daily Affirmation Card */}
@@ -128,6 +125,12 @@ function UserDashboard() {
             </Button>
           </CardContent>
         </Card>
+        {/* Action Buttons */}
+        <Box sx={{ mt: 4,mb: 4, display: "flex", gap: 2 }}>
+          <Button variant="contained" onClick={()=>navigate('/Meditations')} >Start Meditation</Button>
+          <Button variant="outlined">Write a Journal</Button>
+          <Button variant="outlined">Visit Community</Button>
+        </Box>
 
         {/* Meditation Progress Card */}
         <Card sx={{ p: 2 }}>
@@ -157,12 +160,7 @@ function UserDashboard() {
           </CardContent>
         </Card>
 
-        {/* Action Buttons */}
-        <Box sx={{ mt: 4, display: "flex", gap: 2 }}>
-          <Button variant="contained">Start Meditation</Button>
-          <Button variant="outlined">Write a Journal</Button>
-          <Button variant="outlined">Visit Community</Button>
-        </Box>
+        
       </Box>
     </Box>
   );
