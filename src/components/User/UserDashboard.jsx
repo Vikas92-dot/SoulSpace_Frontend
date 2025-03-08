@@ -1,36 +1,43 @@
 import { useEffect, useState } from "react";
-import { Home, Heart, BookOpen, MessageSquare, Bell, User, LogOut } from "lucide-react";
+
 import { Button } from "../ui/Button";
 import { Card, CardContent } from "../ui/Card";
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line } from "recharts";
-import { Box, Drawer, List, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
+
 import axios from "axios";
 import api from "../api";
-import { useDispatch } from "react-redux";
-import {signOut} from '../redux-config/UserSlice'
+import { useSelector } from "react-redux";
+
 import { useNavigate } from "react-router-dom";
+import Sidebar from "./SideBar";
+import { Box, Typography } from "@mui/material";
 
 function UserDashboard() {
   const [quote, setQuote] = useState("“Believe in yourself and all that you are.”");
   const [allMeditationData, setAllMeditationData] = useState([]); // Stores full data
   const [meditationData, setMeditationData] = useState([]); // Stores paginated data
   const [currentPage, setCurrentPage] = useState(0); // Track current page
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const sessionsPerPage = 7; // Show 7 sessions per page
 
+  //Fetch user details
+  const user = useSelector((store)=>store.User);
+    
+  console.log(user.user.id)
+  
   useEffect(() => {
+        
     const fetchMeditationProgress = async () => {
       try {
-        const userId = 39; // Replace with dynamic user ID
+        const userId = user.user.id;
         const response = await axios(`${api.MEDITATION_TRACKER}/${userId}`);
         console.log(response.data);
         
-        let data = response.data;
+        let data = response.data;    
 
         // Sort sessions by date (latest first)
-        data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        data.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
 
         // Convert session dates to weekday names
         const formattedData = data.map(session => ({
@@ -46,6 +53,7 @@ function UserDashboard() {
     };
 
     fetchMeditationProgress();
+    
   }, []);
 
   // Handle Next Page
@@ -67,48 +75,15 @@ function UserDashboard() {
       setCurrentPage(prevPage);
     }
   };
-  const menuItems = [
-      { text: "Dashboard", icon: <Home />, path: "/UserDashboard" },
-      { text: "Journal", icon: <BookOpen />, path: "/journal" },
-      { text: "Affirmations", icon: <MessageSquare />, path: "/affirmations" },
-      { text: "Community", icon: <MessageSquare />, path: "/community" },
-      { text: "Notifications", icon: <Bell />, path: "/notifications" },
-      { text: "Profile", icon: <User />, path: "/profile" }
-    ];
-
   
   return (
     <Box sx={{ display: "flex", height: "100vh", bgcolor: "#f5f5f5" }}>
-      {/* Sidebar Menu */}
-      <Drawer
-        variant="permanent"
-        sx={{
-          width: 240,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": { width: 240, boxSizing: "border-box", p: 2 },
-        }}
-      >
-        <List>
-          {menuItems.map((item, index) => (
-                      <ListItemButton key={index} onClick={() => navigate(item.path)}>
-                        <ListItemIcon sx={{ color: "primary.main" }}>{item.icon}</ListItemIcon>
-                        <ListItemText primary={item.text} />
-                      </ListItemButton>
-                    ))}
-          {/* Logout Button */}
-          <ListItemButton onClick={()=>dispatch(signOut())} sx={{ color: "error.main" }}>
-            <ListItemIcon>
-              <LogOut color="red"/>
-            </ListItemIcon>
-            <ListItemText primary="Logout" />
-          </ListItemButton>
-        </List>
-      </Drawer>
-
+      {/*Side bar component */}
+      <Sidebar/>
       {/* Main Dashboard Section */}
       <Box sx={{ flex: 1, p: 4 }}>
         <Typography variant="h4" fontWeight="bold" gutterBottom>
-          Good Morning, {} 🌞
+          Good Morning, {user.user.name} 🌞
         </Typography>
 
         {/* Daily Affirmation Card */}
@@ -159,8 +134,6 @@ function UserDashboard() {
             </Box>
           </CardContent>
         </Card>
-
-        
       </Box>
     </Box>
   );

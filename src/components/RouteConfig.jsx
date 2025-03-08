@@ -3,7 +3,7 @@ import VerifyOTP from "./User/VerifyOTP";
 import Register from "./User/Register";
 import UserDashboard from "./User/UserDashboard";
 import Signin from "./User/Signin";
-import Home from "./Home";
+import Home from "./LandingPage/Home";
 import MeditationPage from "./Meditations";
 import Auth from "./auth/Auth";
 
