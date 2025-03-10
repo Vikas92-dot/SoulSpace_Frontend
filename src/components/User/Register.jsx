@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import api from '../api';
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Register() {
     const [name, setName] = useState("");
@@ -56,6 +56,12 @@ function Register() {
                                     <div className="text-center">
                                         <button type="submit" className="btn btn-warning btn-lg text-dark">Submit</button>
                                     </div>
+                                    <p className="mb-0 mt-4 text-dark text-center">
+                                                        Don't have an account?{" "}
+                                                        <Link to="/Signin" className="text-warning fw-bold">
+                                                          Register
+                                                        </Link>
+                                                      </p>
                                 </form>
                             </div>
                         </div>

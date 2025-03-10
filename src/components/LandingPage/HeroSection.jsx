@@ -1,7 +1,5 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@mui/material';
-import logo from '../images/Logo4.png';
-import background from '../images/meditation-24.jpg';
 import '../Logo.css';
 import { useEffect, useState } from 'react';
 
@@ -25,7 +23,7 @@ function HeroSection() {
 
     return (
         <div className='hero-section' style={{
-                backgroundImage: `linear-gradient(to bottom, rgba(255, 255, 255, 0) 80%, rgb(255, 255, 255) 100%), url(${background})`,
+                backgroundImage: `linear-gradient(to bottom, rgba(255, 255, 255, 0) 80%, rgb(255, 255, 255) 100%), url('/images/meditation-24.jpg')`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
@@ -41,7 +39,7 @@ function HeroSection() {
             }}>
 
             <div className="logo">
-                <img src={logo} alt="Logo" />
+                <img src="/images/Logo4.png" alt="Logo" />
             </div>
             <div className="container d-flex flex-column align-items-center" style={{ marginLeft: "20%" }}>
                 <div className="collapse navbar-collapse justify-content-center" id="navbarNav">

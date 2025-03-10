@@ -1,10 +1,12 @@
-import { Box, Drawer, List, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
-import { Home, Heart, BookOpen, MessageSquare, Bell, User, LogOut } from "lucide-react";
+import { Drawer, List, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
+import { Home, BookOpen, MessageSquare, Bell, User, LogOut } from "lucide-react";
 import { useDispatch } from "react-redux";
 import {signOut} from '../redux-config/UserSlice'
+import { useNavigate } from "react-router-dom";
 
 function Sidebar(){
     const dispatch = useDispatch();
+    const navigate = useNavigate();
       const menuItems = [
           { text: "Dashboard", icon: <Home />, path: "/UserDashboard" },
           { text: "Journal", icon: <BookOpen />, path: "/journal" },
