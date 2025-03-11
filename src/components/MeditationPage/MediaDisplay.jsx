@@ -7,7 +7,7 @@ import VideoList from "./VideoMediaData";
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import api from "../api";
-
+import { useSelector } from "react-redux";
 
 function MediaDisplayPage() {
   const { type, category } = useParams();
@@ -20,10 +20,14 @@ function MediaDisplayPage() {
   const filteredAudio = AudioList.filter((media) => media.category === category);
   const filteredVideo = VideoList.filter((video) => video.category === category);
 
+  const user = useSelector((store) => store.User);
+  const userId = user.user.id;
+
+  // Convert YouTube URL to Embed URL
   function convertToEmbedUrl(url) {
     const youtubeRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/;
     const match = url.match(youtubeRegex);
-    return match ? `https://www.youtube.com/embed/${match[1]}` : url;
+    return match ? `https://www.youtube.com/embed/${match[1]}?autoplay=0&enablejsapi=1` : url;
   }
 
   // Function to handle play event
@@ -33,38 +37,48 @@ function MediaDisplayPage() {
 
   // Function to handle pause or stop
   const handlePause = (media) => {
-    const { id, title, description } = media;
+    const { id, title, description, category } = media; // Ensure id, title, description, and category are available
+  
     if (startTime.current[id]) {
       const endTime = Date.now();
       const duration = Math.round((endTime - startTime.current[id]) / 1000); // Convert to seconds
-
+  
+      // Ensure that all required data is available before proceeding
+      if (!title || !description || !category || !duration) {
+        console.error("Missing data:", { title, description, category, duration });
+        return;
+      }
+  
+      // Push to playbackData only if all required data is present
       setPlaybackData((prev) => [
         ...prev,
         {
-          userId: 39, // Replace with actual userId dynamically
-          title: title,
-          description: description || "No description", // Fallback if description is missing
-          category: type,
-          duration: duration,
+          userId: userId,
+          title,
+          description: description || "No description", 
+          category: type, // audio/video
+          duration,
           notes: "User listened/watched this session",
         },
       ]);
-
+  
       startTime.current[id] = null;
     }
   };
 
-  // Function to send data to the backend
+  // Function to save playback data to the backend
   const savePlaybackData = async () => {
     if (playbackData.length === 0) return;
 
+    console.log("Sending playback data:", playbackData[0]);
+
     try {
-      const response = await axios.post(api.MEDITATION_LOG, playbackData);
+      const response = await axios.post(api.MEDITATION_LOG, playbackData[0]);
       if (response.status === 201) {
         console.log("Playback data saved successfully!");
       }
     } catch (error) {
-      console.error("Error saving playback data:", error);
+      console.error("Error saving playback data:", error.response?.data || error);
     }
   };
 
@@ -117,15 +131,16 @@ function MediaDisplayPage() {
                       ref={(el) => (videoRefs.current[media.id] = el)}
                       width="100%"
                       height="300px"
-                      src={convertToEmbedUrl(media.src) + "?autoplay=0"}
+                      src={convertToEmbedUrl(media.src)}
                       title={media.title}
                       frameBorder="0"
-                      allow="autoplay; encrypted-media"
-                      onLoad={() => handlePlay(media.id)}
+                      allow="autoplay; encrypted-media; picture-in-picture"
+                      allowFullScreen
+                      sandbox="allow-same-origin allow-scripts allow-popups allow-presentation"
+                      style={{ borderRadius: "8px" }}
+                      onPlay={() => handlePlay(media.id)}
                       onPause={() => handlePause(media)}
                       onEnded={() => handlePause(media)}
-                      allowFullScreen
-                      style={{ borderRadius: "8px" }}
                     ></iframe>
                   </Box>
                 </CardContent>
@@ -139,4 +154,5 @@ function MediaDisplayPage() {
     </div>
   );
 }
+
 export default MediaDisplayPage;

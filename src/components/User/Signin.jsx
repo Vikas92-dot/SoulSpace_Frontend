@@ -1,106 +1,138 @@
-import axios from "axios";
-import { useState } from "react";
-import api from "../api";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import axios from "axios";
+import api from "../api";
 import { setUser } from "../redux-config/UserSlice";
+import {
+  Container,
+  Paper,
+  TextField,
+  Button,
+  Typography,
+  Box,
+} from "@mui/material";
+import SendIcon from "@mui/icons-material/Send";
 
-function Signin() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const Signin = () => {
+  const [messages, setMessages] = useState([
+    { sender: "bot", text: "Hello! What's your email?" },
+  ]);
+  const [input, setInput] = useState("");
+  const [step, setStep] = useState(1);
+  const [userData, setUserData] = useState({ email: "", password: "" });
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleSubmit = async (event) => {
-    try {
-      event.preventDefault();
-      let response = await axios.post(api.USER_LOGIN, { email, password });
-      dispatch(setUser(response.data));
-      navigate("/UserDashboard");
-    } catch (err) {
-      console.log(err);
-      toast.error("Invalid User");
+  const handleSend = async () => {
+    if (!input.trim()) return;
+
+    const newMessages = [...messages, { sender: "user", text: input }];
+    setMessages(newMessages);
+
+    if (step === 1) {
+      setUserData({ ...userData, email: input });
+      setMessages([
+        ...newMessages,
+        { sender: "bot", text: "Great! Now enter your password." },
+      ]);
+      setStep(2);
+    } else if (step === 2) {
+      setUserData({ ...userData, password: input });
+      setMessages([
+        ...newMessages,
+        { sender: "bot", text: "Logging you in..." },
+      ]);
+
+      try {
+        const response = await axios.post(api.USER_LOGIN, {
+          email: userData.email,
+          password: input,
+        });
+        dispatch(setUser(response.data));
+        toast.success("Login successful!");
+        navigate("/UserDashboard");
+      } catch (err) {
+        setMessages([
+          ...newMessages,
+          { sender: "bot", text: "Invalid credentials. Try again." },
+        ]);
+        toast.error("Invalid User");
+        setStep(1);
+      }
     }
+    setInput("");
   };
 
   return (
-    <>
-      <section className="d-flex align-items-center justify-content-center min-vh-100" style={{ backgroundColor: "#FFF7D6" }}>
-        <div className="container">
-          <div className="row justify-content-center">
-            <div className="col-md-6 col-lg-5">
-              <div className="card shadow-lg border-0 rounded-lg bg-white">
-                <div className="card-body p-4">
-                  <div className="text-center">
-                    <h3 className="fw-bold text-dark">Sign In</h3>
-                  </div>
-
-                  <form onSubmit={handleSubmit}>
-                    <div className="form-group mb-3">
-                      <label htmlFor="email" className="form-label text-dark">
-                        Email address
-                      </label>
-                      <input
-                        onChange={(event) => setEmail(event.target.value)}
-                        type="email"
-                        id="email"
-                        className="form-control"
-                        placeholder="Enter a valid email address"
-                        value={email}
-                        required
-                      />
-                    </div>
-
-                    <div className="form-group mb-3">
-                      <label htmlFor="password" className="form-label text-dark">
-                        Password
-                      </label>
-                      <input
-                        onChange={(event) => setPassword(event.target.value)}
-                        type="password"
-                        id="password"
-                        className="form-control"
-                        placeholder="Enter password"
-                        value={password}
-                        required
-                      />
-                    </div>
-
-                    <div className="d-flex justify-content-between align-items-center">
-                      <div className="form-check">
-                        <input className="form-check-input" type="checkbox" id="rememberMe" />
-                        <label className="form-check-label text-dark" htmlFor="rememberMe">
-                          Remember me
-                        </label>
-                      </div>
-                      <a href="#!" className="text-warning text-decoration-none">
-                        Forgot password?
-                      </a>
-                    </div>
-
-                    <div className="text-center mt-4">
-                      <button type="submit" className="btn btn-warning btn-lg w-100 text-dark">
-                        Login
-                      </button>
-                    </div>
-                  </form>
-                </div>
-                <div className="card-footer text-center py-3 bg-light">
-                  <p className="mb-0 text-dark">
-                    Don't have an account?{" "}
-                    <Link to="/register" className="text-warning fw-bold">
-                      Register
-                    </Link>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </>
+    <Box
+      sx={
+        {
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "linear-gradient(to bottom, #FFF8E1, #FFD54F)",
+        }
+      }
+    >
+      <ToastContainer />
+      <Container maxWidth="sm">
+        <Paper elevation={5} sx={{ p: 3, borderRadius: 3, textAlign: "center", backgroundColor: "#FFF" }}>
+          <Typography variant="h5" gutterBottom sx={{ fontWeight: "bold", color: "#F57F17" }}>
+            SoulSpace Login
+          </Typography>
+          <Box
+            sx={{
+              height: 300,
+              overflowY: "auto",
+              border: "1px solid #ddd",
+              borderRadius: 2,
+              p: 2,
+              backgroundColor: "#FFECB3",
+            }}
+          >
+            {messages.map((msg, index) => (
+              <Box
+                key={index}
+                sx={{
+                  display: "flex",
+                  justifyContent: msg.sender === "bot" ? "flex-start" : "flex-end",
+                  mb: 1,
+                }}
+              >
+                <Typography
+                  sx={{
+                    p: 1,
+                    borderRadius: 2,
+                    maxWidth: "75%",
+                    backgroundColor: msg.sender === "bot" ? "#FFF" : "#FFD54F",
+                    color: "#000000",
+                  }}
+                >
+                  {msg.text}
+                </Typography>
+              </Box>
+            ))}
+          </Box>
+          <Box sx={{ display: "flex", mt: 2 }}>
+            <TextField
+              fullWidth
+              variant="outlined"
+              size="small"
+              placeholder="Type your response..."
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+            />
+            <Button variant="contained" sx={{ ml: 1, bgcolor: "#FFA000" }} onClick={handleSend}>
+              <SendIcon />
+            </Button>
+          </Box>
+        </Paper>
+      </Container>
+    </Box>
   );
-}
+};
 
 export default Signin;
