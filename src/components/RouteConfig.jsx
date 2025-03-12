@@ -9,6 +9,7 @@ import Auth from "./auth/Auth";
 import Category from "./MeditationPage/Category";
 import MediaDisplayPage from "./MeditationPage/MediaDisplay";
 import UserProfile from "./User/UserProfile";
+import CommunityForum from "./Community";
 
 function RouteConfig(){
     return<>
@@ -22,6 +23,7 @@ function RouteConfig(){
         <Route path="/Meditations/type/:type" element={<Auth><Category/></Auth>}></Route>
         <Route path='/Meditations/type/:type/:category' element={<Auth><MediaDisplayPage/></Auth>}></Route>
         <Route path="/profile" element={<Auth><UserProfile/></Auth>}/>
+        <Route path="/community" element={<Auth><CommunityForum/></Auth>}/>
     </Routes>
     </>
 }

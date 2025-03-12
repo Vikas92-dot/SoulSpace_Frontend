@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 function MediaDisplayPage() {
   const { type, category } = useParams();
   const navigate = useNavigate();
-  const [playbackData, setPlaybackData] = useState([]);
+  const [playbackData, setPlaybackData] = useState([]);//Details store in Array
   const audioRefs = useRef({});
   const videoRefs = useRef({});
   const startTime = useRef({});

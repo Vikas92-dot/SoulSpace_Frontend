@@ -4,7 +4,14 @@ export default{
     "USER_LOGIN": "http://localhost:5000/users/login",
     "USER_LOGOUT":"http://localhost:5000/users/logout",
     "FETCH_USER": "http://localhost:5000/users/getProfile",
+    "UPLOAD_PIC": "http://localhost:5000/users/upload",
+
     "MEDITATION_TRACKER": "http://localhost:5000/meditation/viewProgress",
-    "MEDITATION_LOG": "http://localhost:5000/meditation/log"
+    "MEDITATION_LOG": "http://localhost:5000/meditation/log",
+
+    "CREATE_FORUM": "http://localhost:5000/forum/createPost",
+    "ALLFORUM": "http://localhost:5000/forum/AllPosts",
+    "ADD_COMMENT": "http://localhost:5000/forum/comment",
+    "ADD_LIKE": "http://localhost:5000/forum/like"
     
 }

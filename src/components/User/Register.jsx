@@ -57,11 +57,11 @@ function Register() {
                                         <button type="submit" className="btn btn-warning btn-lg text-dark">Submit</button>
                                     </div>
                                     <p className="mb-0 mt-4 text-dark text-center">
-                                                        Don't have an account?{" "}
-                                                        <Link to="/Signin" className="text-warning fw-bold">
-                                                          Register
-                                                        </Link>
-                                                      </p>
+                                    Already register?{" "}
+                                    <Link to="/Signin" className="text-warning fw-bold">
+                                        SignIn
+                                    </Link>
+                                    </p>
                                 </form>
                             </div>
                         </div>

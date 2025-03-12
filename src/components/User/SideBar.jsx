@@ -3,6 +3,7 @@ import { Home, BookOpen, MessageSquare, Bell, User, LogOut } from "lucide-react"
 import { useDispatch } from "react-redux";
 import {signOut} from '../redux-config/UserSlice'
 import { useNavigate } from "react-router-dom";
+import SelfImprovementIcon from "@mui/icons-material/SelfImprovement";
 
 function Sidebar(){
     const dispatch = useDispatch();
@@ -10,7 +11,7 @@ function Sidebar(){
       const menuItems = [
           { text: "Dashboard", icon: <Home />, path: "/UserDashboard" },
           { text: "Journal", icon: <BookOpen />, path: "/journal" },
-          { text: "Affirmations", icon: <MessageSquare />, path: "/affirmations" },
+          { text: "Meditation", icon: <SelfImprovementIcon />, path: "/Meditations" },
           { text: "Community", icon: <MessageSquare />, path: "/community" },
           { text: "Notifications", icon: <Bell />, path: "/notifications" },
           { text: "Profile", icon: <User />, path: "/profile" }

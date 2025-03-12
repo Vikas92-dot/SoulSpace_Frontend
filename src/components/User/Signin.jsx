@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
@@ -94,13 +94,14 @@ const Signin = () => {
             }}
           >
             {messages.map((msg, index) => (
+              
               <Box
-                key={index}
-                sx={{
-                  display: "flex",
-                  justifyContent: msg.sender === "bot" ? "flex-start" : "flex-end",
-                  mb: 1,
-                }}
+              key={index}
+              sx={{
+                display: "flex",
+                justifyContent: msg.sender === "bot" ? "flex-start" : "flex-end",
+                mb: 1,
+              }}
               >
                 <Typography
                   sx={{
@@ -110,7 +111,8 @@ const Signin = () => {
                     backgroundColor: msg.sender === "bot" ? "#FFF" : "#FFD54F",
                     color: "#000000",
                   }}
-                >
+                  >
+                  
                   {msg.text}
                 </Typography>
               </Box>
@@ -129,6 +131,14 @@ const Signin = () => {
               <SendIcon />
             </Button>
           </Box>
+          <p className="mb-0 mt-4 text-dark text-center">
+          Don't have an account?{" "}
+          <Link to="/register" className="text-warning fw-bold">
+            Register
+          </Link>
+          </p>
+                   
+                                                      
         </Paper>
       </Container>
     </Box>

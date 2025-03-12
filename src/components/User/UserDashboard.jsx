@@ -85,7 +85,7 @@ function UserDashboard() {
             <MenuBookIcon sx={{ mr: 1 }} /> Write a Journal
           </Button>
           <Button variant="outlined" sx={{ borderColor: "#6D4C41", color: "#6D4C41" }}>
-            <GroupsIcon sx={{ mr: 1 }} /> Visit Community
+            <GroupsIcon sx={{ mr: 1 }} onClick={()=> navigate('/community')} /> Visit Community
           </Button>
         </Box>
         <Card sx={{ p: 2, bgcolor: "#FFF3E0" }}>
