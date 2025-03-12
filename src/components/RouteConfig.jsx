@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import VerifyOTP from "./User/VerifyOTP";
 import Register from "./User/Register";
-import UserDashboard from "./User/UserDashboard";
+
 import Signin from "./User/Signin";
 import Home from "./LandingPage/Home";
 import MeditationPage from "./MeditationPage/Meditations";
@@ -9,7 +9,8 @@ import Auth from "./auth/Auth";
 import Category from "./MeditationPage/Category";
 import MediaDisplayPage from "./MeditationPage/MediaDisplay";
 import UserProfile from "./User/UserProfile";
-import CommunityForum from "./Community";
+import CommunityForum from "./CommunityForum/Community";
+import UserDashboard from "./User/UserDashboard/UserDashboard";
 
 function RouteConfig(){
     return<>

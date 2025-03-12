@@ -1,19 +1,12 @@
 import { useEffect, useState } from "react";
-import { Button } from "../ui/Button";
-import { Card, CardContent } from "../ui/Card";
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line } from "recharts";
 import axios from "axios";
-import api from "../api";
+import api from "../../api";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "./SideBar";
-import { Box, Typography } from "@mui/material";
-import SelfImprovementIcon from "@mui/icons-material/SelfImprovement";
-import MenuBookIcon from "@mui/icons-material/MenuBook";
-import GroupsIcon from "@mui/icons-material/Groups";
+import { Box, Typography,Card, CardContent,Button } from "@mui/material";
 
-function UserDashboard() {
-  const [quote, setQuote] = useState("“Believe in yourself and all that you are.”");
+function Progress() {
   const [allMeditationData, setAllMeditationData] = useState([]);
   const [meditationData, setMeditationData] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
@@ -22,6 +15,7 @@ function UserDashboard() {
   const user = useSelector((store) => store.User);
 
   useEffect(() => {
+
     const fetchMeditationProgress = async () => {
       try {
         const userId = user.user.id;
@@ -60,34 +54,7 @@ function UserDashboard() {
   };
   
   return (
-    <Box sx={{ display: "flex", height: "100vh", bgcolor: "linear-gradient(to bottom, #FFDD44, #FF6600)" }}>
-      <Sidebar />
-      <Box sx={{ flex: 1, p: 4, color: "#6D4C41" }}>
-        <Typography variant="h4" fontWeight="bold" gutterBottom>
-          Good Morning, {user.user.name} 🌞
-        </Typography>
-        <Card sx={{ mb: 4, p: 2, bgcolor: "#FFF3E0" }}>
-          <CardContent>
-            <Typography variant="h5" color="#6D4C41" gutterBottom>
-              Daily Affirmation
-            </Typography>
-            <Typography variant="body1" fontStyle="italic" mb={2}>
-              {quote}
-            </Typography>
-            <Button onClick={() => setQuote("“Peace comes from within. Do not seek it without.” - Buddha")}>Refresh Quote</Button>
-          </CardContent>
-        </Card>
-        <Box sx={{ mt: 4, mb: 4, display: "flex", gap: 2 }}>
-          <Button variant="contained" sx={{ bgcolor: "#4CAF50" }} onClick={() => navigate('/Meditations')}>
-            <SelfImprovementIcon sx={{ mr: 1 }} /> Start Meditation
-          </Button>
-          <Button variant="outlined" sx={{ borderColor: "#6D4C41", color: "#6D4C41" }}>
-            <MenuBookIcon sx={{ mr: 1 }} /> Write a Journal
-          </Button>
-          <Button variant="outlined" sx={{ borderColor: "#6D4C41", color: "#6D4C41" }}>
-            <GroupsIcon sx={{ mr: 1 }} onClick={()=> navigate('/community')} /> Visit Community
-          </Button>
-        </Box>
+    <Box sx={{  height: "auto", bgcolor: "linear-gradient(to bottom, #FFDD44, #FF6600)" }}>
         <Card sx={{ p: 2, bgcolor: "#FFF3E0" }}>
           <CardContent>
             <Typography variant="h5" color="#6D4C41" gutterBottom>
@@ -103,18 +70,17 @@ function UserDashboard() {
               </LineChart>
             </ResponsiveContainer>
             <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
-              <Button onClick={handlePrevious} disabled={currentPage === 0} sx={{ color: "#6D4C41" }}>
+              <Button onClick={handlePrevious} disabled={currentPage === 0} variant="contained">
                 Previous
               </Button>
-              <Button onClick={handleNext} disabled={(currentPage + 1) * sessionsPerPage >= allMeditationData.length} sx={{ color: "#6D4C41" }}>
+              <Button onClick={handleNext} disabled={(currentPage + 1) * sessionsPerPage >= allMeditationData.length} variant="contained">
                 Next
               </Button>
             </Box>
           </CardContent>
         </Card>
       </Box>
-    </Box>
   );
 }
 
-export default UserDashboard;
+export default Progress;

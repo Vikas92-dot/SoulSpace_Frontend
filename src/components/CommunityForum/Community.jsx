@@ -3,9 +3,9 @@ import axios from "axios";
 import { Card, CardContent, CardActions } from "@mui/material";
 import { Button, TextField, IconButton, Typography } from "@mui/material";
 import { Favorite, ChatBubbleOutline } from "@mui/icons-material";
-import api from "./api";
+import api from "../api";
 import { useSelector } from "react-redux";
-import Sidebar from "./User/SideBar";
+import Sidebar from "../User/SideBar";
 
 const CommunityForum = () => {
   const [posts, setPosts] = useState([]);
@@ -13,8 +13,10 @@ const CommunityForum = () => {
   const [newPost, setNewPost] = useState({ title: "", content: "" });
 
   let user = useSelector((store) => store.User);
-  let userId = user?.user?.id;
-
+  let userId = user.user.id;
+  console.log(userId);
+  
+  
   useEffect(() => {
     fetchPosts();
   }, []);
@@ -22,6 +24,7 @@ const CommunityForum = () => {
   const fetchPosts = async () => {
     try {
       const response = await axios.get(api.ALLFORUM);
+      console.log(response.data);
       setPosts(response.data);
 
       // Extract posts already liked by the user
@@ -68,6 +71,8 @@ const CommunityForum = () => {
     if (!commentText.trim()) return;
     try {
       const response = await axios.post(api.ADD_COMMENT, { id: postId, userId, commentText });
+      
+      // Optimistic UI update: Add new comment to state
       setPosts(
         posts.map((post) =>
           post.postId === postId
@@ -79,7 +84,7 @@ const CommunityForum = () => {
       console.error("Error adding comment:", error);
     }
   };
-
+  
   return (
     <div style={{ display: "flex" }}>
       <Sidebar />
