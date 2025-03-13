@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Card, CardContent, TextField, Button, Avatar, IconButton } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Sidebar from "./SideBar";
 import axios from "axios";  // Make sure axios is installed
 import api from "../api";
+import { toast, ToastContainer } from "react-toastify";
+import { updateUserProfilePic } from "../redux-config/UserSlice";
 
 export default function UserProfile() {
 
@@ -18,6 +20,7 @@ export default function UserProfile() {
   const [email, setEmail] = useState(userEmail);
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
+  const dispatch = useDispatch();
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -31,16 +34,24 @@ export default function UserProfile() {
     const formData = new FormData();
     formData.append("name", name);
     formData.append("email", email);
-    if (image) formData.append("profilePic", image);
+    if (image) formData.append("image", image);
 
     try {
-      const response = await axios.post(api.UPLOAD_PIC/{userId}, formData, {
+      const response = await axios.post(`${api.UPLOAD_PIC}/${userId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      console.log(response.data); // handle response
-      // Update Redux state if necessary or show success message
+      console.log();
+      
+      
+      if(response.data){
+        toast.success("Image changed successfully..");
+        //Change in redux
+        dispatch(updateUserProfilePic(response.data.imagePath));
+        setPreview(`${api.BASE_URL}${response.data.imagePath}`);
+      }
+      
     } catch (error) {
       console.error("Error uploading profile:", error);
     }
@@ -48,12 +59,13 @@ export default function UserProfile() {
 
   return (
     <div style={{ display: "flex" }}>
+      <ToastContainer/>
       <Sidebar />
       <div
         className="flex justify-center items-center bg-gray-100"
-        style={{ flexGrow: 1, marginLeft: 200, marginRight: 200 }}
+        style={{ flexGrow: 1, marginLeft: 200, marginRight: 200, marginTop: 30 }}
       >
-        <Card className="p-6 rounded-2xl shadow-lg bg-white max-w-sm text-center">
+        <Card className="p-6 rounded-3xl shadow-lg bg-white max-w-sm text-center">
           <CardContent>
             <label htmlFor="upload-button">
               <input
@@ -64,11 +76,8 @@ export default function UserProfile() {
                 onChange={handleImageChange}
               />
               <IconButton color="primary" component="span">
-                <Avatar
-                  src={preview || userProfilePic || ""}
-                  sx={{ width: 100, height: 100 }}
-                />
-                <PhotoCamera sx={{ position: "absolute", top: 60, left: 60 }} />
+              <Avatar sx={{ width: 150, height: 150 }} src={preview || (userProfilePic ? `${api.BASE_URL}${userProfilePic}` : "")} />
+                <PhotoCamera sx={{ position: "absolute", top: 100, left: 90 }} />
               </IconButton>
             </label>
             <div className="mt-4">

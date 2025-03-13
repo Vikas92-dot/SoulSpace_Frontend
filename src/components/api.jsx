@@ -1,4 +1,5 @@
 export default{
+    "BASE_URL": "http://localhost:5000",
     "USER_REGISTER" :"http://localhost:5000/users/register",
     "VERIFY_OTP": "http://localhost:5000/users/verify-otp",
     "USER_LOGIN": "http://localhost:5000/users/login",

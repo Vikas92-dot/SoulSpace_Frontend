@@ -6,6 +6,7 @@ const slice = createSlice({
         user:{},
         token: null,
         message: "",
+        profilePic:"",
         isLoggedIn: false
     },
     reducers:{
@@ -17,6 +18,9 @@ const slice = createSlice({
           state.isLoggedIn = true;
           delete state.user.password;
         },
+        updateUserProfilePic: (state, action) => {
+            state.user.profilePic = action.payload;
+          },
         signOut: (state,action)=>{
             state.user = {};
             state.token = null;
@@ -25,5 +29,5 @@ const slice = createSlice({
         }
     }
 });
-export const {setUser, signOut} = slice.actions;
+export const {setUser,updateUserProfilePic, signOut} = slice.actions;
 export default slice.reducer;
