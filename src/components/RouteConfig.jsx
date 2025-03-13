@@ -11,13 +11,14 @@ import MediaDisplayPage from "./MeditationPage/MediaDisplay";
 import UserProfile from "./User/UserProfile";
 import CommunityForum from "./CommunityForum/Community";
 import UserDashboard from "./User/UserDashboard/UserDashboard";
+import JournalEntry from "./Journal/JournalEntry";
 
 function RouteConfig(){
     return<>
     <Routes>
         <Route path="/" element={<Home/>}/>
         <Route path='/register' element={<Register/>}/>
-        <Route path='/Verify-otp' element={<VerifyOTP/>}/>
+        <Route path='/Verify-otp/:email' element={<VerifyOTP/>}/>
         <Route path="/Signin" element={<Signin/>}/>
         <Route path="/UserDashboard" element={<Auth><UserDashboard /></Auth>}/>
         <Route path="/Meditations" element={<Auth><MeditationPage/></Auth>}/>
@@ -25,6 +26,9 @@ function RouteConfig(){
         <Route path='/Meditations/type/:type/:category' element={<Auth><MediaDisplayPage/></Auth>}></Route>
         <Route path="/profile" element={<Auth><UserProfile/></Auth>}/>
         <Route path="/community" element={<Auth><CommunityForum/></Auth>}/>
+        <Route path="/community" element={<Auth><CommunityForum/></Auth>}/>
+        <Route path="/journal" element={<Auth><JournalEntry/></Auth>}/>
+
     </Routes>
     </>
 }

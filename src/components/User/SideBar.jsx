@@ -24,6 +24,7 @@ function Sidebar(){
               width: 240,
               flexShrink: 0,
               "& .MuiDrawer-paper": { width: 240, boxSizing: "border-box", p: 2 },
+              
             }}
           >
             <List>

@@ -12,6 +12,11 @@ export default{
     "CREATE_FORUM": "http://localhost:5000/forum/createPost",
     "ALLFORUM": "http://localhost:5000/forum/AllPosts",
     "ADD_COMMENT": "http://localhost:5000/forum/comment",
-    "ADD_LIKE": "http://localhost:5000/forum/like"
+    "ADD_LIKE": "http://localhost:5000/forum/like",
+
+    "GET_JOURNALS": "http://localhost:5000/journal/fetch",
+    "CREATE_JOURNAL": "http://localhost:5000/journal/create",
+    "UPDATE_JOURNAL": "http://localhost:5000/journal/update",
+    "DELETE_JOURNAL": "http://localhost:5000/journal/delete"
     
 }

@@ -1,16 +1,21 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 function VerifyOTP() {
-  const[email,setEmail] = useState("");
+  const { email } = useParams();
+  const[emailId,setEmailId] = useState("");
   const[otp,setOtp] = useState("");
   const navigate = useNavigate();
 
+  useEffect(() => {
+    setEmailId(email); 
+  }, [email]);
+
   const handleSubmit=(event)=>{
       event.preventDefault();
-      axios.post(api.VERIFY_OTP,{email,otp})
+      axios.post(api.VERIFY_OTP,{email:emailId,otp})
       .then((response)=>{
         console.log(response.data);
         navigate('/UserDashboard');
@@ -19,7 +24,7 @@ function VerifyOTP() {
       })
   }
     return (
-      <section className="h-100 h-custom" style={{ backgroundColor: "#8fc4b7" }}>
+      <section  style={{ background: "linear-gradient(to bottom, #FFF8E1, #FFD54F)", height:"100vh" }}>
         <div className="container py-5 h-100">
           <div className="row d-flex justify-content-center align-items-center h-100">
             <div className="col-lg-6 col-xl-4">
@@ -27,14 +32,15 @@ function VerifyOTP() {
                 <h3 className="mb-4 text-center">Verify OTP</h3>
                 <form onSubmit={handleSubmit}>
                   <div className="form-outline mb-4">
-                    <label className="form-label" htmlFor="email">Email</label>
-                    <input onChange={(event)=>setEmail(event.target.value)} type="email" id="email" className="form-control" required />
+                    <label className="form-label">Email</label>
+                    <input label="email" value={emailId} onChange={(event)=>setEmailId(event.target.value)} type="email" id="email" className="form-control" required readOnly // Prevent user from changing the email 
+                    />
                   </div>
                   <div className="form-outline mb-4">
                     <label className="form-label" htmlFor="otp">OTP</label>
                     <input onChange={(event)=> setOtp(event.target.value)} type="text" id="otp" className="form-control" required />
                   </div>
-                  <button type="submit" className="btn btn-success btn-lg w-100">Verify</button>
+                  <button type="submit" className="btn btn-warning btn-lg w-100">Verify</button>
                 </form>
               </div>
             </div>

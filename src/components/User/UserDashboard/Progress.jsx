@@ -55,7 +55,7 @@ function Progress() {
   
   return (
     <Box sx={{  height: "auto", bgcolor: "linear-gradient(to bottom, #FFDD44, #FF6600)" }}>
-        <Card sx={{ p: 2, bgcolor: "#FFF3E0" }}>
+        <Card sx={{ p: 2 }}>
           <CardContent>
             <Typography variant="h5" color="#6D4C41" gutterBottom>
               Meditation Progress

@@ -28,13 +28,13 @@ function UserDashboard() {
 
   
   return (
-    <Box sx={{ display: "flex", height: "100vh", bgcolor: "linear-gradient(to bottom, #FFDD44, #FF6600)" }}>
+    <Box sx={{ display: "flex", height: "auto", background: "linear-gradient(to bottom, #FFF8E1, #FFD54F)" }}>
       <Sidebar />
       <Box sx={{ flex: 1, p: 4, color: "#6D4C41" }}>
         <Typography variant="h4" fontWeight="bold" gutterBottom>
           Good Morning, {user.user.name} 🌞
         </Typography>
-        <Card sx={{ mb: 4, p: 2, bgcolor: "#FFF3E0" }}>
+        <Card sx={{ mb: 4, p: 2 }}>
           <CardContent>
             <Typography variant="h5" color="#6D4C41" gutterBottom>
               Daily Affirmation
@@ -49,7 +49,7 @@ function UserDashboard() {
           <Button variant="contained" sx={{ bgcolor: "#4CAF50" }} onClick={() => navigate('/Meditations')}>
             <SelfImprovementIcon sx={{ mr: 1 }} /> Start Meditation
           </Button>
-          <Button variant="contained" sx={{ bgcolor: "#4CAF50" }}>
+          <Button variant="contained" sx={{ bgcolor: "#4CAF50" }} onClick={()=> navigate('/journal')}>
             <MenuBookIcon sx={{ mr: 1 }} /> Write a Journal
           </Button>
           <Button variant="contained" sx={{ bgcolor: "#4CAF50" }} onClick={()=> navigate('/community')}>

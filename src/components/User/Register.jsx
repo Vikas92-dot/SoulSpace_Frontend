@@ -15,7 +15,7 @@ function Register() {
         axios.post(api.USER_REGISTER, { name, email, password, level })
             .then((response) => {
                 console.log(response.data);
-                navigate('/Verify-otp');
+                navigate(`/Verify-otp/${email}`);
             })
             .catch(error => {
                 console.log(error);
@@ -23,7 +23,7 @@ function Register() {
     };
 
     return (
-        <section className="h-100 h-custom d-flex align-items-center justify-content-center" style={{ backgroundColor: "#FFF7D6", minHeight: "100vh" }}>
+        <section className="h-100 h-custom d-flex align-items-center justify-content-center" style={{ background: "linear-gradient(to bottom, #FFF8E1, #FFD54F)", minHeight: "100vh" }}>
             <div className="container py-5">
                 <div className="row d-flex justify-content-center align-items-center">
                     <div className="col-lg-8 col-xl-6">

@@ -27,11 +27,24 @@ const Signin = () => {
 
   const handleSend = async () => {
     if (!input.trim()) return;
-
+  
     const newMessages = [...messages, { sender: "user", text: input }];
     setMessages(newMessages);
-
+  
     if (step === 1) {
+      // Email validation regex
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+      if (!emailRegex.test(input)) {
+        setMessages([
+          ...newMessages,
+          { sender: "bot", text: "Please enter a valid email ID." },
+        ]);
+        toast.error("Incorrect email id");
+        setStep(1);
+        return; // Stop further execution
+      }
+  
       setUserData({ ...userData, email: input });
       setMessages([
         ...newMessages,
@@ -44,7 +57,7 @@ const Signin = () => {
         ...newMessages,
         { sender: "bot", text: "Logging you in..." },
       ]);
-
+  
       try {
         const response = await axios.post(api.USER_LOGIN, {
           email: userData.email,
@@ -64,7 +77,7 @@ const Signin = () => {
     }
     setInput("");
   };
-
+  
   return (
     <Box
       sx={

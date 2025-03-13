@@ -27,6 +27,8 @@ function MediaDisplayPage() {
   function convertToEmbedUrl(url) {
     const youtubeRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/;
     const match = url.match(youtubeRegex);
+    //console.log(match);
+    
     return match ? `https://www.youtube.com/embed/${match[1]}?autoplay=0&enablejsapi=1` : url;
   }
 
@@ -133,7 +135,6 @@ function MediaDisplayPage() {
                       height="300px"
                       src={convertToEmbedUrl(media.src)}
                       title={media.title}
-                      frameBorder="0"
                       allow="autoplay; encrypted-media; picture-in-picture"
                       allowFullScreen
                       sandbox="allow-same-origin allow-scripts allow-popups allow-presentation"
