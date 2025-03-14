@@ -12,6 +12,7 @@ import UserProfile from "./User/UserProfile";
 import CommunityForum from "./CommunityForum/Community";
 import UserDashboard from "./User/UserDashboard/UserDashboard";
 import JournalEntry from "./Journal/JournalEntry";
+import Notifications from "./Notifications/Notifications";
 
 function RouteConfig(){
     return<>
@@ -28,6 +29,8 @@ function RouteConfig(){
         <Route path="/community" element={<Auth><CommunityForum/></Auth>}/>
         <Route path="/community" element={<Auth><CommunityForum/></Auth>}/>
         <Route path="/journal" element={<Auth><JournalEntry/></Auth>}/>
+        <Route path="/notifications" element={<Auth><Notifications/></Auth>}/>
+
 
     </Routes>
     </>

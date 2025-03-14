@@ -18,6 +18,9 @@ export default{
     "GET_JOURNALS": "http://localhost:5000/journal/fetch",
     "CREATE_JOURNAL": "http://localhost:5000/journal/create",
     "UPDATE_JOURNAL": "http://localhost:5000/journal/update",
-    "DELETE_JOURNAL": "http://localhost:5000/journal/delete"
+    "DELETE_JOURNAL": "http://localhost:5000/journal/delete",
+
+    "SET_NOTIFICATION": "http://localhost:5000/notifications/set",
+    "GET_NOTIFICATION": "http://localhost:5000/notifications/get"
     
 }
