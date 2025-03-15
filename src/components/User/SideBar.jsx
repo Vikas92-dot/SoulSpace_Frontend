@@ -27,6 +27,9 @@ function Sidebar(){
               
             }}
           >
+            <div className="logo" style={{marginBottom:"20px"}}>
+                <img src="/images/Logo4.png" alt="Logo" />
+            </div>
             <List>
               {menuItems.map((item, index) => (
                           <ListItemButton key={index} onClick={() => navigate(item.path)}>

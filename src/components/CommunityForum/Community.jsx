@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Card, CardContent, CardActions } from "@mui/material";
+import { Card, CardContent, CardActions, CircularProgress } from "@mui/material";
 import { Button, TextField, IconButton, Typography } from "@mui/material";
 import { Favorite, ChatBubbleOutline } from "@mui/icons-material";
 import api from "../api";
@@ -11,6 +11,7 @@ const CommunityForum = () => {
   const [posts, setPosts] = useState([]);
   const [likedPosts, setLikedPosts] = useState([]); // Store liked posts for logged-in user
   const [newPost, setNewPost] = useState({ title: "", content: "" });
+  const [loading,setLoading] = useState(true);
 
   let user = useSelector((store) => store.User);
   let userId = user.user.id;
@@ -35,6 +36,9 @@ const CommunityForum = () => {
       setLikedPosts(userLikedPosts);
     } catch (error) {
       console.error("Error fetching posts:", error);
+    }
+    finally{
+      setLoading(false);
     }
   };
 
@@ -115,7 +119,8 @@ const CommunityForum = () => {
           </Button>
         </div>
 
-        {[...posts].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map((post) => (
+        {loading ? (<CircularProgress style={{display:"block", margin:"20px auto"}}/>) 
+        : [...posts].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map((post) => (
           <Card key={post.postId} style={{ marginBottom: "16px", padding: "16px" }}>
             <CardContent
               style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}

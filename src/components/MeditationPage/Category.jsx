@@ -1,62 +1,242 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, Card, CardActionArea, CardContent } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "../User/SideBar";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useState, useRef, useEffect } from "react";
+import axios from "axios";
+import api from "../api";
+import { useSelector } from "react-redux";
+import { toast, ToastContainer } from "react-toastify";
+import AudioList from "./AudioMediaData";
+import VideoList from "./VideoMediaData";
 
 function Category() {
-  const { type } = useParams(); // "audio" or "video"
+  const { type } = useParams();
   const navigate = useNavigate();
-
   const categories = ["Stress", "Anxiety", "Focus", "Body Scan"];
+  const [selectedCategory, setSelectedCategory] = useState(categories[0]);
+  const user = useSelector((store) => store.User);
+  const userId = user.user.id;
+  const playbackData = useRef([]);
+  const startTime = useRef({});
+  
+  
+  const filteredAudio = AudioList.filter((media) => media.category === selectedCategory);
+  const filteredVideo = VideoList.filter((video) => video.category === selectedCategory);
+
+  function convertToEmbedUrl(url) {
+    const youtubeRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/;
+    const match = url.match(youtubeRegex);
+    return match ? `https://www.youtube.com/embed/${match[1]}?autoplay=0&enablejsapi=1` : url;
+  }
+
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category);
+  };
+
+  const handlePlay = (id) => {
+    startTime.current[id] = Date.now();
+  };
+
+  const handlePause = (media) => {
+    const { id, title, description, category } = media;
+    if (startTime.current[id]) {
+      const endTime = Date.now();
+      const duration = Math.round((endTime - startTime.current[id]) / 10000);
+      playbackData.current.push({ userId, title, description, category: type, duration, notes: "User listened/watched this session" });
+      toast.success("Meditation Saved successfully");
+      startTime.current[id] = null;
+    }
+  };
+
+  const savePlaybackData = async () => {
+    if (playbackData.current.length === 0) return;
+    try {
+      await axios.post(api.MEDITATION_LOG, playbackData.current[0]);
+    } catch (error) {
+      console.error("Error saving playback data:", error.response?.data || error);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      savePlaybackData();
+    };
+  }, []);
 
   return (
-    <div style={{display:"flex"}}>
-        <Sidebar/>
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        height: "100vh",
-        bgcolor: "#f5f5f5",
-        flexGrow:1
-      }}
-    >
-      {/* Back Button */}
-      <Button
-        startIcon={<ArrowBackIcon />}
-        onClick={() => navigate(-1)} // Go back to the previous page
-        sx={{
-          position: "absolute",
-          top: 20,
-          left: "20%",
-          bgcolor: "#0000FF", // Background color for the button
-          color: "white", // Text color for the button
-          "&:hover": { bgcolor: "#00332c" }, // Hover effect
-          padding: "8px 16px", // Button padding
-        }}
-      >
-        Back
-      </Button>
+    <div style={{ display: "flex" }}>
+      <ToastContainer />
+      <Sidebar />
+      <Box sx={{ flexGrow: 1, padding: 4, background: "linear-gradient(to bottom, #FFF8E1, #FFD54F)", minHeight: "100vh" }}>
+        {/* Back Button */}
+        <Button
+          startIcon={<ArrowBackIcon />}
+          onClick={() => navigate(-1)}
+          sx={{ position: "absolute", top: 20, left: "20%", bgcolor: "#1E88E5", color: "white", "&:hover": { bgcolor: "#1565C0" }, padding: "10px 20px", borderRadius: "12px", fontSize: "16px" }}
+        >
+          Back
+        </Button>
+        
+        <Typography variant="h4" sx={{ textAlign: "center", fontWeight: "bold", mt: 5 }}>Explore our library</Typography>
+        
+        <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mt: 3 }}>
+          {categories.map((category) => (
+            <Button key={category} variant={selectedCategory === category ? "contained" : "outlined"} onClick={() => handleCategoryClick(category)}>{category}</Button>
+          ))}
+        </Box>
 
-      <Typography sx={{mt:15}} variant="h4" fontWeight="bold" gutterBottom>
-        Choose Category 
-      </Typography>
-
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2 }}>
-        {categories.map((category) => (
-          <Button
-            key={category}
-            variant="contained"
-            onClick={() => navigate(`/Meditations/type/${type}/${category}`)}
-          >
-            {category}
-          </Button>
-        ))}
+        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))", gap: 3, mt: 4 }}>
+          {type === "audio" && filteredAudio.length > 0 ? (
+            filteredAudio.map((media) => (
+              <Card key={media.id} sx={{ padding: 2, borderRadius: "12px", boxShadow: 5, "&:hover": { transform: "scale(1.05)" } }}>
+                <CardContent>
+                  <Typography variant="h6">{media.title}</Typography>
+                  <audio controls onPlay={() => handlePlay(media.id)} onPause={() => handlePause(media)} style={{ width: "100%" }}>
+                    <source src={convertToEmbedUrl(media.src)} type="audio/mpeg" />
+                  </audio>
+                </CardContent>
+              </Card>
+            ))
+          ) : type === "video" && filteredVideo.length > 0 ? (
+            filteredVideo.map((media) => (
+              <Card key={media.id} sx={{ padding: 2, borderRadius: "12px", boxShadow: 5, "&:hover": { transform: "scale(1.05)" } }}>
+                <CardContent>
+                  <Typography variant="h6">{media.title}</Typography>
+                  <iframe 
+                    width="100%" 
+                    height="300px" 
+                    src={convertToEmbedUrl(media.src)} 
+                    title={media.title} 
+                    allowFullScreen>
+                  </iframe>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <Typography sx={{ textAlign: "center", fontWeight: "bold", fontSize: "1.5rem" }}>No {type} files available.</Typography>
+          )}
+        </Box>
       </Box>
-    </Box>
     </div>
   );
 }
 
 export default Category;
+
+
+
+
+// import { Box, Button, Typography, Card, CardActionArea, CardContent } from "@mui/material";
+// import { useNavigate, useParams } from "react-router-dom";
+// import Sidebar from "../User/SideBar";
+// import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+
+// function Category() {
+//   const { type } = useParams(); // "audio" or "video"
+//   const navigate = useNavigate();
+
+//   const categories = ["Stress", "Anxiety", "Focus", "Body Scan"];
+//   const gradientColors = "linear-gradient( #FF6F61, #FF8C42)";
+
+//   return (
+//     <div style={{ display: "flex" }}>
+//       <Sidebar />
+//       <Box
+//         sx={{
+//           display: "flex",
+//           flexDirection: "column",
+//           alignItems: "center",
+//           height: "100vh",
+//           background: "linear-gradient(to bottom, #FFF8E1, #FFD54F)",
+//           flexGrow: 1,
+//           padding: 4,
+//         }}
+//       >
+//         {/* Back Button */}
+//         <Button
+//           startIcon={<ArrowBackIcon />}
+//           onClick={() => navigate(-1)}
+//           sx={{
+//             position: "absolute",
+//             top: 20,
+//             left: "20%",
+//             bgcolor: "#1E88E5",
+//             color: "white",
+//             "&:hover": { bgcolor: "#1565C0" },
+//             padding: "10px 20px",
+//             borderRadius: "12px",
+//             fontSize: "16px",
+//           }}
+//         >
+//           Back
+//         </Button>
+
+//         <Typography
+//           sx={{
+//             mt: 15,
+//             color: "#333",
+//             fontSize: "2.5rem",
+//             fontWeight: "bold",
+//             textTransform: "uppercase",
+//             letterSpacing: "2px",
+//             textAlign: "center",
+//             background: "linear-gradient(135deg, #f12711, #f5af19)",
+//             WebkitBackgroundClip: "text",
+//             WebkitTextFillColor: "transparent",
+//             paddingBottom: "10px",
+//           }}
+//           variant="h4"
+//           gutterBottom
+//         >
+//           Choose Your Category
+//         </Typography>
+//         <Box
+//           sx={{
+//             display: "grid",
+//             gridTemplateColumns: { xs: "2fr", sm: "1fr 1fr" },
+//             gap: 4,
+//             mt: 4,
+//           }}
+//         >
+//           {categories.map((category, index) => (
+//             <Card
+//               key={category}
+//               sx={{
+//                 width: 260,
+//                 borderRadius: "15px",
+//                 boxShadow: 5,
+//                 transition: "0.3s",
+//                 background: "linear-gradient(135deg, #ffffff, #f9f9f9)",
+//                 "&:hover": { transform: "scale(1.08)", boxShadow: 6 },
+//               }}
+//             >
+//               <CardActionArea onClick={() => navigate(`/Meditations/type/${type}/${category}`)}>
+//                 <CardContent sx={{ textAlign: "center",  }}>
+//                   <Button
+//                     fullWidth
+//                     variant="contained"
+//                     sx={{
+//                       background: gradientColors,
+//                       color: "white",
+//                       fontSize: "18px",
+//                       fontWeight: "bold",
+//                       borderRadius: "10px",
+//                       textTransform: "uppercase",
+//                       letterSpacing: "1px",
+//                       "&:hover": {  transform: "scale(1.05)" },
+//                     }}
+//                   >
+//                     {category}
+//                   </Button>
+//                 </CardContent>
+//               </CardActionArea>
+//             </Card>
+//           ))}
+//         </Box>
+//       </Box>
+//     </div>
+//   );
+// }
+
+// export default Category;

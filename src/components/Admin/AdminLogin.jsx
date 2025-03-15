@@ -82,14 +82,14 @@ const AdminLogin = () => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(to bottom, #FFF8E1, #FFD54F)",
+          background: "linear-gradient(to bottom,rgb(225, 225, 255),rgb(79, 97, 255))",
         }
       }
     >
       <ToastContainer />
       <Container maxWidth="sm">
         <Paper elevation={5} sx={{ p: 3, borderRadius: 3, textAlign: "center", backgroundColor: "#FFF" }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: "bold", color: "#F57F17" }}>
+          <Typography variant="h5" gutterBottom sx={{ fontWeight: "bold", color: "rgb(79, 97, 255)" }}>
             Admin Login
           </Typography>
           <Box
@@ -99,7 +99,7 @@ const AdminLogin = () => {
               border: "1px solid #ddd",
               borderRadius: 2,
               p: 2,
-              backgroundColor: "#FFECB3",
+              backgroundColor: "rgb(175, 180, 220)",
             }}
           >
             {messages.map((msg, index) => (
@@ -117,7 +117,7 @@ const AdminLogin = () => {
                     p: 1,
                     borderRadius: 2,
                     maxWidth: "75%",
-                    backgroundColor: msg.sender === "bot" ? "#FFF" : "#FFD54F",
+                    backgroundColor: msg.sender === "bot" ? "#FFF" : "#FFF",
                     color: "#000000",
                   }}
                   >
@@ -136,7 +136,7 @@ const AdminLogin = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
             />
-            <Button variant="contained" sx={{ ml: 1, bgcolor: "#FFA000" }} onClick={handleSend}>
+            <Button variant="contained" sx={{ ml: 1, bgcolor: "rgb(79, 97, 255)" }} onClick={handleSend}>
               <SendIcon />
             </Button>
           </Box>               

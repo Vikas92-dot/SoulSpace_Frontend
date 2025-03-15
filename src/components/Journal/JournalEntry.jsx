@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { TextField, Button, Paper, Typography, List, ListItem, IconButton } from "@mui/material";
+import { TextField, Button, Paper, Typography, List, ListItem, IconButton, CircularProgress } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 import api from "../api";
 import { useSelector } from "react-redux";
@@ -17,6 +17,7 @@ function JournalEntry() {
   const [editMode, setEditMode] = useState(null);
   const [editTitle, setEditTitle] = useState("");
   const [editEntry, setEditEntry] = useState("");
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   useEffect(() => {
     fetchEntries();
@@ -31,6 +32,9 @@ function JournalEntry() {
       setJournalEntries(response.data);
     } catch (error) {
       console.error("Error fetching journal entries:", error);
+    }
+    finally{
+      setLoading(false);
     }
   };
 
@@ -123,7 +127,7 @@ function JournalEntry() {
       </form>
       <Typography variant="h6" style={{ marginTop: "20px" }}>Previous Entries</Typography>
       <List>
-        {journalEntries.map((item) => (
+        {loading ? (<CircularProgress style={{display:"block", margin:"20px auto" }}/>) : journalEntries.map((item) => (
           <ListItem key={item.id} style={{ background: "#f5f5f5", marginTop: "5px", padding: "10px", borderRadius: "5px", display: "flex", flexDirection: "column" }}>
             {editMode === item.id ? (
               <>

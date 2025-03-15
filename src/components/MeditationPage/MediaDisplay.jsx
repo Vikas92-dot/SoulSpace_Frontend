@@ -24,56 +24,33 @@ function MediaDisplayPage() {
   const user = useSelector((store) => store.User);
   const userId = user.user.id;
 
-  // Convert YouTube URL to Embed URL
   function convertToEmbedUrl(url) {
     const youtubeRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/;
     const match = url.match(youtubeRegex);
-    //console.log(match);
-    
     return match ? `https://www.youtube.com/embed/${match[1]}?autoplay=0&enablejsapi=1` : url;
   }
 
-  // Function to handle play event
   const handlePlay = (id) => {
     startTime.current[id] = Date.now();
   };
 
-  // Function to handle pause or stop
   const handlePause = (media) => {
     const { id, title, description, category } = media; 
-  
     if (startTime.current[id]) {
       const endTime = Date.now();
-      const duration = Math.round((endTime - startTime.current[id]) / 10000); 
-  
+      const duration = Math.round((endTime - startTime.current[id]) / 10000);
       if (!title || !description || !category || !duration) {
         console.error("Missing data:", { title, description, category, duration });
         return;
       }
-      
-      // Push to playbackData only if all required data is present
-      setPlaybackData((prev) => [
-        ...prev,
-        {
-          userId: userId,
-          title,
-          description: description || "No description", 
-          category: type, // audio/video
-          duration,
-          notes: "User listened/watched this session",
-        },
-      ]);
+      setPlaybackData((prev) => [...prev, { userId, title, description, category: type, duration, notes: "User listened/watched this session" }]);
       toast.success("Meditation Saved successfully");
       startTime.current[id] = null;
     }
   };
 
-  // Function to save playback data to the backend
   const savePlaybackData = async () => {
     if (playbackData.length === 0) return;
-
-    console.log("Sending playback data:", playbackData[0]);
-
     try {
       const response = await axios.post(api.MEDITATION_LOG, playbackData[0]);
       if (response.status === 201) {
@@ -84,7 +61,6 @@ function MediaDisplayPage() {
     }
   };
 
-  // Save data before unmount
   useEffect(() => {
     return () => {
       savePlaybackData();
@@ -92,31 +68,41 @@ function MediaDisplayPage() {
   }, [playbackData]);
 
   return (
-    <div style={{ display: "flex" }}>
-      <ToastContainer/>
+    <div style={{ display: "flex", background: "linear-gradient(to bottom, #FFF8E1, #FFD54F)", minHeight: "100vh" }}>
+      <ToastContainer />
       <Sidebar />
-      <Box sx={{ flexGrow: 1, padding: 3 }}>
-        <Button startIcon={<ArrowBackIcon />} onClick={() => navigate(-1)}>
+      <Box sx={{ flexGrow: 1, padding: 4, color: "white" }}>
+      {/* Back Button */}
+      <Button
+          startIcon={<ArrowBackIcon />}
+          onClick={() => navigate(-1)}
+          sx={{
+            position: "absolute",
+            top: 20,
+            left: "20%",
+            bgcolor: "#1E88E5",
+            color: "white",
+            "&:hover": { bgcolor: "#1565C0" },
+            padding: "10px 20px",
+            borderRadius: "12px",
+            fontSize: "16px",
+          }}
+        >
           Back
         </Button>
 
-        <Typography variant="h4">{category} ({type.toUpperCase()})</Typography>
+        <Typography variant="h4" sx={{ mt: 3, fontWeight: "bold", textAlign: "center", textTransform: "uppercase", letterSpacing: "2px",color:"#FF6F61" }}>
+          {category} ({type.toUpperCase()})
+        </Typography>
 
-        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))", gap: 3 }}>
+        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))", gap: 3, mt: 4 }}>
           {type === "audio" && filteredAudio.length > 0 ? (
             filteredAudio.map((media) => (
-              <Card key={media.id} sx={{ padding: 2 }}>
+              <Card key={media.id} sx={{ padding: 2, borderRadius: "12px", boxShadow: "5px 5px 20px rgba(0,0,0,0.2)", transition: "0.3s", "&:hover": { transform: "scale(1.05)" } }}>
                 <CardContent>
-                  <Typography variant="h6">{media.title}</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: "bold" }}>{media.title}</Typography>
                   <Box>
-                    <audio
-                      ref={(el) => (audioRefs.current[media.id] = el)}
-                      controls
-                      onPlay={() => handlePlay(media.id)}
-                      onPause={() => handlePause(media)}
-                      onEnded={() => handlePause(media)}
-                      style={{ width: "100%" }}
-                    >
+                    <audio ref={(el) => (audioRefs.current[media.id] = el)} controls onPlay={() => handlePlay(media.id)} onPause={() => handlePause(media)} onEnded={() => handlePause(media)} style={{ width: "100%", borderRadius: "8px" }}>
                       <source src={media.src} type="audio/mpeg" />
                     </audio>
                   </Box>
@@ -125,31 +111,17 @@ function MediaDisplayPage() {
             ))
           ) : type === "video" && filteredVideo.length > 0 ? (
             filteredVideo.map((media) => (
-              <Card key={media.id} sx={{ padding: 2 }}>
+              <Card key={media.id} sx={{ padding: 2, borderRadius: "12px", boxShadow: "5px 5px 20px rgba(0,0,0,0.2)", transition: "0.3s", "&:hover": { transform: "scale(1.05)" } }}>
                 <CardContent>
-                  <Typography variant="h6">{media.title}</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: "bold" }}>{media.title}</Typography>
                   <Box>
-                    <iframe
-                      ref={(el) => (videoRefs.current[media.id] = el)}
-                      width="100%"
-                      height="300px"
-                      src={convertToEmbedUrl(media.src)}
-                      title={media.title}
-                      allow="autoplay; encrypted-media; picture-in-picture"
-                      allowFullScreen
-                      sandbox="allow-same-origin allow-scripts allow-popups allow-presentation"
-                      style={{ borderRadius: "8px" }}
-                      controls
-                      onPlay={() => handlePlay(media.id)}
-                      onPause={() => handlePause(media)}
-                      onEnded={() => handlePause(media)}
-                    ></iframe>
+                    <iframe ref={(el) => (videoRefs.current[media.id] = el)} width="100%" height="300px" src={convertToEmbedUrl(media.src)} title={media.title} allow="autoplay; encrypted-media; picture-in-picture" allowFullScreen sandbox="allow-same-origin allow-scripts allow-popups allow-presentation" style={{ borderRadius: "8px", boxShadow: "3px 3px 15px rgba(0,0,0,0.2)" }}></iframe>
                   </Box>
                 </CardContent>
               </Card>
             ))
           ) : (
-            <Typography>No {type} files available.</Typography>
+            <Typography sx={{ textAlign: "center", fontWeight: "bold", fontSize: "1.5rem" }}>No {type} files available.</Typography>
           )}
         </Box>
       </Box>
