@@ -44,15 +44,31 @@ function HeroSection() {
             <div className="container d-flex flex-column align-items-center" style={{ marginLeft: "20%" }}>
                 <div className="collapse navbar-collapse justify-content-center" id="navbarNav">
                     <ul className="navbar-nav gap-4" style={{ fontSize: "20px", color: "white", listStyle: "none", padding: 0, fontWeight: "bold" }}>
-                        {["Home", "Meditations", "Journal", "Community", "Signin"].map((item, index) => (
-                            <li key={index} className="nav-item" style={{ transition: "0.3s" }}>
-                                <Link className="nav-link" to={`/${item}`} style={{ color: "white", textDecoration: "none" }}
-                                    onMouseOver={(e) => e.target.style.color = "#FFA500"}
-                                    onMouseOut={(e) => e.target.style.color = "white"}>
-                                    {item === "Signin" ? "Login/Signup" : item}
-                                </Link>
-                            </li>
-                        ))}
+
+                        <li className="nav-item" style={{ transition: "0.3s" }}>
+                            <Link className="nav-link" to={'/'} style={{ color: "white", textDecoration: "none" }}
+                            onMouseOver={(e) => e.target.style.color = "#FFA500"} onMouseOut={(e) => e.target.style.color = "white"}>Home</Link>
+                        </li>
+
+                        <li className="nav-item" style={{ transition: "0.3s" }}>
+                            <Link className="nav-link" to={'/Meditations'} style={{ color: "white", textDecoration: "none" }}
+                            onMouseOver={(e) => e.target.style.color = "#FFA500"} onMouseOut={(e) => e.target.style.color = "white"}>Meditation</Link>
+                        </li>
+
+                        <li className="nav-item" style={{ transition: "0.3s" }}>
+                            <Link className="nav-link" to={'/journal'} style={{ color: "white", textDecoration: "none" }}
+                            onMouseOver={(e) => e.target.style.color = "#FFA500"} onMouseOut={(e) => e.target.style.color = "white"}>Journal</Link>
+                        </li>
+
+                        <li className="nav-item" style={{ transition: "0.3s" }}>
+                            <Link className="nav-link" to={'/community'} style={{ color: "white", textDecoration: "none" }}
+                            onMouseOver={(e) => e.target.style.color = "#FFA500"} onMouseOut={(e) => e.target.style.color = "white"}>Community</Link>
+                        </li>
+                        
+                        <li className="nav-item" style={{ transition: "0.3s" }}>
+                            <Link className="nav-link" to={'/Signin'} style={{ color: "white", textDecoration: "none" }}
+                            onMouseOver={(e) => e.target.style.color = "#FFA500"} onMouseOut={(e) => e.target.style.color = "white"}>Signin</Link>
+                        </li>
                     </ul>
                 </div>
             </div>

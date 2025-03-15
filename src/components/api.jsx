@@ -21,6 +21,13 @@ export default{
     "DELETE_JOURNAL": "http://localhost:5000/journal/delete",
 
     "SET_NOTIFICATION": "http://localhost:5000/notifications/set",
-    "GET_NOTIFICATION": "http://localhost:5000/notifications/get"
+    "GET_NOTIFICATION": "http://localhost:5000/notifications/get",
+
+    // Admin Routes
+    "ADMIN_LOGIN":"http://localhost:5000/admin/sign-in",
+    "GET_ALLUSERS": "http://localhost:5000/admin/users",
+    "GET_ALLPOSTS": "http://localhost:5000/forum/AllPosts",
+    "DELETE_USER": "http://localhost:5000/admin/users",
+    "DELETE_POST": "http://localhost:5000/admin/forum"
     
 }

@@ -29,5 +29,5 @@ const slice = createSlice({
         }
     }
 });
-export const {setUser,updateUserProfilePic, signOut} = slice.actions;
+export const {setUser,updateUserProfilePic,signOut} = slice.actions;
 export default slice.reducer;

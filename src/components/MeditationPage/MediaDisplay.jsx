@@ -1,6 +1,6 @@
 import { Box, Card, CardContent, Typography, Button } from "@mui/material";
-import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate
-import ArrowBackIcon from "@mui/icons-material/ArrowBack"; // Back icon
+import { useParams, useNavigate } from "react-router-dom"; 
+import ArrowBackIcon from "@mui/icons-material/ArrowBack"; 
 import Sidebar from "../User/SideBar";
 import AudioList from "./AudioMediaData";
 import VideoList from "./VideoMediaData";
@@ -8,11 +8,12 @@ import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import api from "../api";
 import { useSelector } from "react-redux";
+import { toast, ToastContainer } from "react-toastify";
 
 function MediaDisplayPage() {
   const { type, category } = useParams();
   const navigate = useNavigate();
-  const [playbackData, setPlaybackData] = useState([]);//Details store in Array
+  const [playbackData, setPlaybackData] = useState([]);
   const audioRefs = useRef({});
   const videoRefs = useRef({});
   const startTime = useRef({});
@@ -39,18 +40,17 @@ function MediaDisplayPage() {
 
   // Function to handle pause or stop
   const handlePause = (media) => {
-    const { id, title, description, category } = media; // Ensure id, title, description, and category are available
+    const { id, title, description, category } = media; 
   
     if (startTime.current[id]) {
       const endTime = Date.now();
-      const duration = Math.round((endTime - startTime.current[id]) / 1000); // Convert to seconds
+      const duration = Math.round((endTime - startTime.current[id]) / 10000); 
   
-      // Ensure that all required data is available before proceeding
       if (!title || !description || !category || !duration) {
         console.error("Missing data:", { title, description, category, duration });
         return;
       }
-  
+      
       // Push to playbackData only if all required data is present
       setPlaybackData((prev) => [
         ...prev,
@@ -63,7 +63,7 @@ function MediaDisplayPage() {
           notes: "User listened/watched this session",
         },
       ]);
-  
+      toast.success("Meditation Saved successfully");
       startTime.current[id] = null;
     }
   };
@@ -93,8 +93,8 @@ function MediaDisplayPage() {
 
   return (
     <div style={{ display: "flex" }}>
+      <ToastContainer/>
       <Sidebar />
-
       <Box sx={{ flexGrow: 1, padding: 3 }}>
         <Button startIcon={<ArrowBackIcon />} onClick={() => navigate(-1)}>
           Back
@@ -139,6 +139,7 @@ function MediaDisplayPage() {
                       allowFullScreen
                       sandbox="allow-same-origin allow-scripts allow-popups allow-presentation"
                       style={{ borderRadius: "8px" }}
+                      controls
                       onPlay={() => handlePlay(media.id)}
                       onPause={() => handlePause(media)}
                       onEnded={() => handlePause(media)}

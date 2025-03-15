@@ -13,6 +13,10 @@ import CommunityForum from "./CommunityForum/Community";
 import UserDashboard from "./User/UserDashboard/UserDashboard";
 import JournalEntry from "./Journal/JournalEntry";
 import Notifications from "./Notifications/Notifications";
+import AdminDashboard from "./Admin/AdminDashboard";
+import AllForum from "./Admin/AllForum";
+import AdminLogin from "./Admin/AdminLogin";
+import AuthAdmin from "./auth/AuthAdmin";
 
 function RouteConfig(){
     return<>
@@ -31,7 +35,10 @@ function RouteConfig(){
         <Route path="/journal" element={<Auth><JournalEntry/></Auth>}/>
         <Route path="/notifications" element={<Auth><Notifications/></Auth>}/>
 
-
+        {/* Admin Routes */}
+        <Route path="/sign-in-admin" element={<AdminLogin/>}/>
+        <Route path="/adminDashboard" element={<AuthAdmin><AdminDashboard/></AuthAdmin>}/>
+        <Route path="/allForum" element={<AuthAdmin><AllForum/></AuthAdmin>}/>
     </Routes>
     </>
 }

@@ -3,19 +3,20 @@ import { Card, CardContent, TextField, Button, Avatar, IconButton } from "@mui/m
 import { PhotoCamera } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import Sidebar from "./SideBar";
-import axios from "axios";  // Make sure axios is installed
+import axios from "axios"; 
 import api from "../api";
 import { toast, ToastContainer } from "react-toastify";
 import { updateUserProfilePic } from "../redux-config/UserSlice";
 
-export default function UserProfile() {
+function UserProfile() {
 
+  //Extract user information from store
   let user = useSelector((store) => store.User);
-
   const userId = user.user.id;
   const userName = user.user.name;
   const userEmail = user.user.email;
   const userProfilePic = user.user.profilePic;
+
   const [name, setName] = useState(userName);
   const [email, setEmail] = useState(userEmail);
   const [image, setImage] = useState(null);
@@ -58,11 +59,10 @@ export default function UserProfile() {
   };
 
   return (
-    <div style={{ display: "flex" }}>
+    <div style={{ display: "flex",height:"100vh" ,background: "linear-gradient(to bottom, #FFF8E1, #FFD54F)"}}>
       <ToastContainer/>
       <Sidebar />
       <div
-        className="flex justify-center items-center bg-gray-100"
         style={{ flexGrow: 1, marginLeft: 200, marginRight: 200, marginTop: 30 }}
       >
         <Card className="p-6 rounded-3xl shadow-lg bg-white max-w-sm text-center">
@@ -112,3 +112,4 @@ export default function UserProfile() {
     </div>
   );
 }
+export default UserProfile;

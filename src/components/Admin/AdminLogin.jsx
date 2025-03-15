@@ -4,24 +4,24 @@ import { useDispatch } from "react-redux";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import api from "../api";
-import { setUser } from "../redux-config/UserSlice";
+import { setAdmin } from "../redux-config/AdminSlice";
 import {Container,Paper,TextField,Button,Typography,Box} from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 
-const Signin = () => {
+const AdminLogin = () => {
   const [messages, setMessages] = useState([
     { sender: "bot", text: "Hello! What's your email?" },
   ]);
   const [input, setInput] = useState("");
   const [step, setStep] = useState(1);
-  const [userData, setUserData] = useState({ email: "", password: "" });
+  const [adminData, setAdminData] = useState({ email: "", password: "" });
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleSend = async () => {
     if (!input.trim()) return;
   
-    const newMessages = [...messages, { sender: "user", text: input }];
+    const newMessages = [...messages, { sender: "admin", text: input }];
     setMessages(newMessages);
   
     if (step === 1) {
@@ -38,29 +38,29 @@ const Signin = () => {
         return; 
       }
   
-      setUserData({ ...userData, email: input });
+      setAdminData({ ...adminData, email: input });
       setMessages([
         ...newMessages,
         { sender: "bot", text: "Great! Now enter your password." },
       ]);
       setStep(2);
     } else if (step === 2) {
-      setUserData({ ...userData, password: input });
+      setAdminData({ ...adminData, password: input });
       setMessages([
         ...newMessages,
         { sender: "bot", text: "Logging you in..." },
       ]);
   
       try {
-        const response = await axios.post(api.USER_LOGIN, {
-          email: userData.email,
+        const response = await axios.post(api.ADMIN_LOGIN, {
+          email: adminData.email,
           password: input,
         });
-        dispatch(setUser(response.data));
+        dispatch(setAdmin(response.data));
         toast.success("Login successful!");
 
         setTimeout(() => {
-          navigate("/UserDashboard");
+          navigate("/adminDashboard");
         }, 2000);
       } catch (err) {
         setMessages([
@@ -90,7 +90,7 @@ const Signin = () => {
       <Container maxWidth="sm">
         <Paper elevation={5} sx={{ p: 3, borderRadius: 3, textAlign: "center", backgroundColor: "#FFF" }}>
           <Typography variant="h5" gutterBottom sx={{ fontWeight: "bold", color: "#F57F17" }}>
-            SoulSpace Login
+            Admin Login
           </Typography>
           <Box
             sx={{
@@ -139,14 +139,7 @@ const Signin = () => {
             <Button variant="contained" sx={{ ml: 1, bgcolor: "#FFA000" }} onClick={handleSend}>
               <SendIcon />
             </Button>
-          </Box>
-          <p className="mb-0 mt-4 text-dark text-center">
-          Don't have an account?{" "}
-          <Link to="/register" className="text-warning fw-bold">
-            Register
-          </Link>
-          </p>
-                   
+          </Box>               
                                                       
         </Paper>
       </Container>
@@ -154,4 +147,4 @@ const Signin = () => {
   );
 };
 
-export default Signin;
+export default AdminLogin;

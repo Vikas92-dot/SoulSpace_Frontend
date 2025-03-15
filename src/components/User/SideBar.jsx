@@ -35,7 +35,10 @@ function Sidebar(){
                           </ListItemButton>
                         ))}
               {/* Logout Button */}
-              <ListItemButton onClick={()=>dispatch(signOut())} sx={{ color: "error.main" }}>
+              <ListItemButton onClick={()=>
+              {  if(window.confirm("Do you want to Log out?")){
+                  dispatch(signOut())}} } sx={{ color: "error.main" }}>
+                  
                 <ListItemIcon>
                   <LogOut color="red"/>
                 </ListItemIcon>
