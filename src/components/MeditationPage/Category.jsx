@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { toast, ToastContainer } from "react-toastify";
 import AudioList from "./AudioMediaData";
 import VideoList from "./VideoMediaData";
+import { ArrowBack } from "@mui/icons-material";
 
 function Category() {
   const { type } = useParams();
@@ -39,10 +40,10 @@ function Category() {
   };
 
   const handlePause = (media) => {
-    const { id, title, description, category } = media;
+    const { id, title, description } = media;
     if (startTime.current[id]) {
       const endTime = Date.now();
-      const duration = Math.round((endTime - startTime.current[id]) / 10000);
+      const duration = Math.round((endTime - startTime.current[id]) / 1000);
       playbackData.current.push({ userId, title, description, category: type, duration, notes: "User listened/watched this session" });
       toast.success("Meditation Saved successfully");
       startTime.current[id] = null;
@@ -70,15 +71,21 @@ function Category() {
       <Sidebar />
       <Box sx={{ flexGrow: 1, padding: 4, background: "linear-gradient(to bottom, #FFF8E1, #FFD54F)", minHeight: "100vh" }}>
         {/* Back Button */}
-        <Button
-          startIcon={<ArrowBackIcon />}
-          onClick={() => navigate(-1)}
-          sx={{ position: "absolute", top: 20, left: "20%", bgcolor: "#1E88E5", color: "white", "&:hover": { bgcolor: "#1565C0" }, padding: "10px 20px", borderRadius: "12px", fontSize: "16px" }}
-        >
-          Back
-        </Button>
+          <Button
+              startIcon={<ArrowBack />}
+              onClick={() => navigate(-1)}
+              sx={{
+                  position: "absolute",
+                  top: 25,
+                  left: "20%"
+              }}
+              variant="contained"
+              color="inherit"
+          >
+              Back
+          </Button>
         
-        <Typography variant="h4" sx={{ textAlign: "center", fontWeight: "bold", mt: 5 }}>Explore our library</Typography>
+        <Typography variant="h4" sx={{ textAlign: "center", fontWeight: "bold", mt: 5 }}>Choose Meditation Category</Typography>
         
         <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mt: 3 }}>
           {categories.map((category) => (
@@ -91,9 +98,9 @@ function Category() {
             filteredAudio.map((media) => (
               <Card key={media.id} sx={{ padding: 2, borderRadius: "12px", boxShadow: 5, "&:hover": { transform: "scale(1.05)" } }}>
                 <CardContent>
-                  <Typography variant="h6">{media.title}</Typography>
+                  <Typography variant="h5">{media.title}</Typography>
                   <audio controls onPlay={() => handlePlay(media.id)} onPause={() => handlePause(media)} style={{ width: "100%" }}>
-                    <source src={convertToEmbedUrl(media.src)} type="audio/mpeg" />
+                    <source src={media.src} type="audio/mpeg" />
                   </audio>
                 </CardContent>
               </Card>
@@ -102,7 +109,7 @@ function Category() {
             filteredVideo.map((media) => (
               <Card key={media.id} sx={{ padding: 2, borderRadius: "12px", boxShadow: 5, "&:hover": { transform: "scale(1.05)" } }}>
                 <CardContent>
-                  <Typography variant="h6">{media.title}</Typography>
+                  <Typography variant="h5">{media.title}</Typography>
                   <iframe 
                     width="100%" 
                     height="300px" 

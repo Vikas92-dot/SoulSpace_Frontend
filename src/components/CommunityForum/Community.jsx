@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Card, CardContent, CardActions, CircularProgress } from "@mui/material";
+import { Card, CardContent, CardActions, CircularProgress, Container, Box, Paper } from "@mui/material";
 import { Button, TextField, IconButton, Typography } from "@mui/material";
 import { Favorite, ChatBubbleOutline } from "@mui/icons-material";
 import api from "../api";
@@ -9,14 +9,12 @@ import Sidebar from "../User/SideBar";
 
 const CommunityForum = () => {
   const [posts, setPosts] = useState([]);
-  const [likedPosts, setLikedPosts] = useState([]); // Store liked posts for logged-in user
+  const [likedPosts, setLikedPosts] = useState([]);
   const [newPost, setNewPost] = useState({ title: "", content: "" });
-  const [loading,setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   let user = useSelector((store) => store.User);
   let userId = user.user.id;
-  console.log(userId);
-  
   
   useEffect(() => {
     fetchPosts();
@@ -25,19 +23,14 @@ const CommunityForum = () => {
   const fetchPosts = async () => {
     try {
       const response = await axios.get(api.ALLFORUM);
-      console.log(response.data);
       setPosts(response.data);
-
-      // Extract posts already liked by the user
       const userLikedPosts = response.data
         .filter((post) => post.likes.some((like) => like.userId === userId))
         .map((post) => post.postId);
-
       setLikedPosts(userLikedPosts);
     } catch (error) {
       console.error("Error fetching posts:", error);
-    }
-    finally{
+    } finally {
       setLoading(false);
     }
   };
@@ -54,18 +47,15 @@ const CommunityForum = () => {
   };
 
   const likePost = async (postId) => {
-    if (likedPosts.includes(postId)) return; // Prevent duplicate likes
-
+    if (likedPosts.includes(postId)) return;
     try {
       await axios.post(api.ADD_LIKE, { forumPostId: postId, userId });
-
-      // Optimistic UI Update
       setPosts(
         posts.map((post) =>
           post.postId === postId ? { ...post, likeCount: post.likeCount + 1 } : post
         )
       );
-      setLikedPosts([...likedPosts, postId]); // Mark post as liked
+      setLikedPosts([...likedPosts, postId]);
     } catch (error) {
       console.error("Error liking post:", error);
     }
@@ -75,10 +65,8 @@ const CommunityForum = () => {
     if (!commentText.trim()) return;
     try {
       const response = await axios.post(api.ADD_COMMENT, { id: postId, userId, commentText });
-      
-      // Optimistic UI update: Add new comment to state
       setPosts(
-        posts.map((post) =>
+        posts?.map((post) =>
           post.postId === postId
             ? { ...post, comments: [...post.comments, response.data.newComment] }
             : post
@@ -88,103 +76,90 @@ const CommunityForum = () => {
       console.error("Error adding comment:", error);
     }
   };
-  
+
   return (
-    <div style={{ display: "flex" }}>
+    <Box sx={{ display: "flex", background: "#F4F6F8", minHeight: "100vh" }}>
       <Sidebar />
-      <div style={{ maxWidth: "600px", margin: "auto", padding: "16px" }}>
-        <Typography variant="h4" gutterBottom>
-          Community Forum
-        </Typography>
-        <div style={{ marginBottom: "16px" }}>
+      <Container maxWidth="md" sx={{ mt: 4 }}>
+        <Paper elevation={3} sx={{ p: 3, mb: 3, borderRadius: 2 }}>
+          <Typography variant="h4" gutterBottom>
+            Community Forum
+          </Typography>
           <TextField
             fullWidth
             label="Title"
             variant="outlined"
             value={newPost.title}
             onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
+            sx={{ mb: 2 }}
           />
           <TextField
             fullWidth
             multiline
-            rows={2}
+            rows={3}
             variant="outlined"
             label="Share your thoughts..."
             value={newPost.content}
             onChange={(e) => setNewPost({ ...newPost, content: e.target.value })}
-            style={{ marginTop: "8px" }}
+            sx={{ mb: 2 }}
           />
-          <Button variant="contained" color="primary" onClick={addPost} style={{ marginTop: "8px" }}>
+          <Button variant="contained" color="primary" onClick={addPost}>
             Post
           </Button>
-        </div>
+        </Paper>
 
-        {loading ? (<CircularProgress style={{display:"block", margin:"20px auto"}}/>) 
-        : [...posts].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map((post) => (
-          <Card key={post.postId} style={{ marginBottom: "16px", padding: "16px" }}>
-            <CardContent
-              style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
-            >
-              <div>
-                <Typography variant="subtitle1" fontWeight="bold">
-                  {post.title}
+        {loading ? (
+          <CircularProgress sx={{ display: "block", mx: "auto" }} />
+        ) : (
+          posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map((post) => (
+            <Card key={post.postId} sx={{ mb: 2, p: 2, borderRadius: 2, boxShadow: 3 }}>
+              <CardContent>
+                <Typography variant="h6">{post.title}</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  By {post.author?.userName || "Unknown"} - {new Date(post.createdAt).toLocaleString()}
                 </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  By {post.author?.userName || "Unknown"}
-                </Typography>
-              </div>
-              <Typography variant="body2" color="textSecondary">
-                {new Date(post.createdAt).toLocaleString()}
-              </Typography>
-            </CardContent>
-            <CardContent>
-              <Typography variant="body1">{post.content}</Typography>
-            </CardContent>
-            <CardActions>
-            <IconButton 
-                onClick={() => likePost(post.postId)} 
-                disabled={likedPosts.includes(post.postId)}
-                >
-                <Favorite color={likedPosts.includes(post.postId) ? "error" : "inherit"} />
+                <Typography sx={{ mt: 1 }}>{post.content}</Typography>
+              </CardContent>
+              <CardActions>
+                <IconButton onClick={() => likePost(post.postId)} disabled={likedPosts.includes(post.postId)}>
+                  <Favorite color={likedPosts.includes(post.postId) ? "error" : "inherit"} />
                 </IconButton>
                 <Typography>{post.likeCount}</Typography>
-              <IconButton>
-                <ChatBubbleOutline />
-              </IconButton>
-              <Typography>{post.commentCount || 0}</Typography>
-            </CardActions>
-            <CardContent>
-              {/* Display All Comments */}
-              {Array.isArray(post.comments) && post.comments.length > 0 ? (
-                post.comments.map((comment, index) => (
-                  <Typography key={index} variant="body2" color="textSecondary">
-                    <strong>{comment.userName || "Anonymous"}:</strong> {comment.comment}
+                <IconButton>
+                  <ChatBubbleOutline />
+                </IconButton>
+                <Typography>{post.commentCount || 0}</Typography>
+              </CardActions>
+              <CardContent>
+                {post.comments?.length > 0 ? (
+                  post.comments.map((comment, index) => (
+                    <Typography key={index} variant="body2" color="text.secondary">
+                      <strong>{comment.userName || "Anonymous"}:</strong> {comment.comment}
+                    </Typography>
+                  ))
+                ) : (
+                  <Typography variant="body2" color="text.secondary">
+                    No comments yet.
                   </Typography>
-                ))
-              ) : (
-                <Typography variant="body2" color="textSecondary">
-                  No comments yet.
-                </Typography>
-              )}
-
-              {/* Input for adding comments */}
-              <TextField
-                fullWidth
-                variant="outlined"
-                placeholder="Add a comment..."
-                style={{ marginTop: "8px" }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    addComment(post.postId, e.target.value);
-                    e.target.value = ""; // Clear input after adding comment
-                  }
-                }}
-              />
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    </div>
+                )}
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  placeholder="Add a comment..."
+                  sx={{ mt: 1 }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      addComment(post.postId, e.target.value);
+                      e.target.value = "";
+                    }
+                  }}
+                />
+              </CardContent>
+            </Card>
+          ))
+        )}
+      </Container>
+    </Box>
   );
 };
 

@@ -17,6 +17,8 @@ import AdminDashboard from "./Admin/AdminDashboard";
 import AllForum from "./Admin/AllForum";
 import AdminLogin from "./Admin/AdminLogin";
 import AuthAdmin from "./auth/AuthAdmin";
+import Feedback from "./Admin/FeedbackList";
+import ForgotPassword from "./User/ForgotPassword";
 
 function RouteConfig(){
     return<>
@@ -25,6 +27,7 @@ function RouteConfig(){
         <Route path='/register' element={<Register/>}/>
         <Route path='/Verify-otp/:email' element={<VerifyOTP/>}/>
         <Route path="/Signin" element={<Signin/>}/>
+        <Route path="/forgot-password" element={<ForgotPassword/>}/>
         <Route path="/UserDashboard" element={<Auth><UserDashboard /></Auth>}/>
         <Route path="/Meditations" element={<Auth><MeditationPage/></Auth>}/>
         <Route path="/Meditations/type/:type" element={<Auth><Category/></Auth>}></Route>
@@ -39,6 +42,7 @@ function RouteConfig(){
         <Route path="/sign-in-admin" element={<AdminLogin/>}/>
         <Route path="/adminDashboard" element={<AuthAdmin><AdminDashboard/></AuthAdmin>}/>
         <Route path="/allForum" element={<AuthAdmin><AllForum/></AuthAdmin>}/>
+        <Route path="/allFeedback" element={<AuthAdmin><Feedback/></AuthAdmin>}/>
     </Routes>
     </>
 }

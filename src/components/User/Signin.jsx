@@ -6,6 +6,8 @@ import axios from "axios";
 import api from "../api";
 import { setUser } from "../redux-config/UserSlice";
 import {Container,Paper,TextField,Button,Typography,Box} from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack"; 
+
 import SendIcon from "@mui/icons-material/Send";
 
 const Signin = () => {
@@ -83,10 +85,30 @@ const Signin = () => {
           alignItems: "center",
           justifyContent: "center",
           background: "linear-gradient(to bottom, #FFF8E1, #FFD54F)",
+         
         }
+        
       }
     >
       <ToastContainer />
+      {/* Home Button */}
+            <Button
+                
+                onClick={() => navigate('/')}
+                sx={{
+                  position: "absolute",
+                  top: 20,
+                  left: "2%",
+                  bgcolor: "#F57F17",
+                  color: "white",
+                  "&:hover": { bgcolor: "#FFD54F" },
+                  padding: "10px 20px",
+                  borderRadius: "12px",
+                  fontSize: "16px",
+                }}
+              >
+                Home
+              </Button>
       <Container maxWidth="sm">
         <Paper elevation={5} sx={{ p: 3, borderRadius: 3, textAlign: "center", backgroundColor: "#FFF" }}>
           <Typography variant="h5" gutterBottom sx={{ fontWeight: "bold", color: "#F57F17" }}>
@@ -146,7 +168,11 @@ const Signin = () => {
             Register
           </Link>
           </p>
-                   
+          <p className="mb-0 mt-2 text-dark text-center">
+            <Link to="/forgot-password" className="text-danger fw-bold">
+              Forgot Password?
+            </Link>
+          </p>         
                                                       
         </Paper>
       </Container>

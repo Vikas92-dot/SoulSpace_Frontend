@@ -3,19 +3,20 @@ import axios from "axios";
 import api from "../api";
 import { useSelector } from "react-redux";
 import { Button, TextField, Card, CardContent, Typography } from "@mui/material";
-import GetNotifications from "./GetNotifications";
+import { toast, ToastContainer } from "react-toastify";
+
 
 const SetNotification = () => {
   const [type, setType] = useState("");
   const [time, setTime] = useState("");
 
   const user = useSelector((store) => store.User);
-  const userId = user?.user?.id;
+  const userId = user.user.id;
 
   const saveNotification = async () => {
     try {
       await axios.post(api.SET_NOTIFICATION, { userId, type, time });
-      alert("Notification scheduled!");
+      toast.success("Notification successfully created.");
     } catch (error) {
       console.error("Error scheduling notification:", error);
       alert("Failed to schedule notification!");
@@ -32,9 +33,10 @@ const SetNotification = () => {
         padding: 25,
         alignItems: "center",
         height: "100vh",
-        background: "linear-gradient(to bottom, #FFF8E1, #FFD54F)", // Light Orange Theme
+         // Light Orange Theme
       }}
     >
+      <ToastContainer/>
       <Card
         sx={{
           width: "400px",
@@ -97,8 +99,6 @@ const SetNotification = () => {
           </Button>
         </CardContent>
       </Card>
-
-      <GetNotifications />
     </div>
   );
 };

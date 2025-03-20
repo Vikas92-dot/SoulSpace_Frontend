@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import api from "../api";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
 
 function VerifyOTP() {
   const { email } = useParams();
@@ -13,18 +14,24 @@ function VerifyOTP() {
     setEmailId(email); 
   }, [email]);
 
-  const handleSubmit=(event)=>{
-      event.preventDefault();
-      axios.post(api.VERIFY_OTP,{email:emailId,otp})
-      .then((response)=>{
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    axios.post(api.VERIFY_OTP, { email: emailId, otp })
+      .then((response) => {
         console.log(response.data);
-        navigate('/UserDashboard');
-      }).catch(err=>{
-        console.log(err);
+        toast.success("OTP Verified successfully!");
+        setTimeout(() => {
+          navigate('/UserDashboard');
+        }, 2000);
       })
-  }
+      .catch(err => {
+        toast.error("Invalid OTP!");
+        console.error(err);
+      });
+  };
     return (
       <section  style={{ background: "linear-gradient(to bottom, #FFF8E1, #FFD54F)", height:"100vh" }}>
+        <ToastContainer/>
         <div className="container py-5 h-100">
           <div className="row d-flex justify-content-center align-items-center h-100">
             <div className="col-lg-6 col-xl-4">

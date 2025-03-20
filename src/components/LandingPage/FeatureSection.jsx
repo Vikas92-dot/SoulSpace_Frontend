@@ -18,7 +18,7 @@ function FeatureSection() {
         <Typography 
           variant="h4" 
           component="h1" 
-          sx={{ 
+          sx={{  
             textAlign: 'center', 
             marginBottom: 4,
             color: "#333", 

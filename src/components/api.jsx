@@ -3,6 +3,8 @@ export default{
     "USER_REGISTER" :"http://localhost:5000/users/register",
     "VERIFY_OTP": "http://localhost:5000/users/verify-otp",
     "USER_LOGIN": "http://localhost:5000/users/login",
+    "FORGOT_OTP": "http://localhost:5000/users/forgotOtp",
+    "FORGOT_PASSWORD": "http://localhost:5000/users/forgotPassword",
     "USER_LOGOUT":"http://localhost:5000/users/logout",
     "FETCH_USER": "http://localhost:5000/users/getProfile",
     "UPLOAD_PIC": "http://localhost:5000/users/upload",
@@ -28,6 +30,10 @@ export default{
     "GET_ALLUSERS": "http://localhost:5000/admin/users",
     "GET_ALLPOSTS": "http://localhost:5000/forum/AllPosts",
     "DELETE_USER": "http://localhost:5000/admin/users",
-    "DELETE_POST": "http://localhost:5000/admin/forum"
+    "DELETE_POST": "http://localhost:5000/admin/forum",
+
+    //Contact Us Page
+    "FILL_FORM": "http://localhost:5000/contact-us/fill-form",
+    "GET_FEEDBACK": "http://localhost:5000/contact-us/get-feedback"
     
 }

@@ -11,6 +11,7 @@ const AllForum = () => {
   const [forums, setForums] = useState([]);
   const [searchName, setSearchName] = useState("");
   const [author,setAuthor] = useState("");
+  const [comments,setComments] = useState('');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -25,9 +26,12 @@ const AllForum = () => {
       
       for(let i=0; i<response.data.length; i++){
         setAuthor(response.data[i].author);
+        setComments(response.data[i].comments);
       }
+      console.log(comments);
+      
       setForums(response.data);
-      // setAuthor(response.data);
+      
     } catch (error) {
       console.error("Error fetching Forum Post:", error);
     } finally {
@@ -49,7 +53,7 @@ const AllForum = () => {
   };
 
   const filteredForums = forums.filter((forum) =>
-    forum.author.userName.toString().includes(searchName)
+    forum.author.userName.includes(searchName)
   );
 
   return (
@@ -57,7 +61,7 @@ const AllForum = () => {
       <SideBarAdmin/>
     <Container maxWidth="md">
       <ToastContainer/>
-      <Typography variant="h4" gutterBottom>
+      <Typography sx={{mt:5}} variant="h4" gutterBottom>
         Community Posts
       </Typography>
 

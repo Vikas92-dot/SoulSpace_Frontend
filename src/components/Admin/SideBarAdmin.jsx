@@ -3,6 +3,8 @@ import { Home, Users, MessageSquare, LogOut } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { signOutAdmin } from "../redux-config/AdminSlice";
+import { Feedback, FeedbackTwoTone, FeedRounded } from "@mui/icons-material";
+
 
 function SideBarAdmin() {
   const dispatch = useDispatch();
@@ -10,7 +12,7 @@ function SideBarAdmin() {
   
   const menuItems = [
     { text: "Dashboard", icon: <Home />, path: "/adminDashboard" },
-    { text: "Users", icon: <Users />, path: "/adminDashboard" },
+    { text: "Feedback", icon: <Feedback />, path: "/allFeedback" },
     { text: "Community", icon: <MessageSquare />, path: "/allForum" },
   ];
 
@@ -30,6 +32,9 @@ function SideBarAdmin() {
     >
       {/* Admin Header */}
       <Box sx={{ textAlign: "center", py: 2 }}>
+        <Box sx={{height:"90px"}}>
+          <img style={{height:"100px"}} src="/images/admin.webp"/>
+        </Box>
         <Typography variant="h6" fontWeight="bold">Admin Panel</Typography>
       </Box>
       <Divider />

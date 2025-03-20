@@ -9,14 +9,13 @@ import { toast, ToastContainer } from "react-toastify";
 const UserList = () => {
   const [users, setUsers] = useState([]);
   const [searchName, setSearchName] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchUsers();
   }, []);
 
   const fetchUsers = async () => {
-    setLoading(true);
     try {
       const response = await axios.get(api.GET_ALLUSERS);
       setUsers(response.data);
@@ -40,16 +39,15 @@ const UserList = () => {
   };
 
   
-
   const filteredUsers = users.filter((user) =>
-    user.name.toString().includes(searchName)
+    user.name.includes(searchName)
   );
 
   return (
     <Container style={{flexGrow:1}} maxWidth="md">
       <ToastContainer/>
-      <Typography variant="h4" gutterBottom>
-        User List
+      <Typography sx={{mt:5}} variant="h4" gutterBottom>
+        Users List
       </Typography>
 
       {/* Search Input */}
