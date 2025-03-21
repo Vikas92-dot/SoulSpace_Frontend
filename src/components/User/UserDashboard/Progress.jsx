@@ -25,10 +25,15 @@ function Progress() {
         let data = response.data;
       
         data.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-        const formattedData = data.map(session => ({
-          date: new Date(session.createdAt).toLocaleDateString("en-US", { weekday: "short" }),
-          minutes: session.duration,
-        }));
+        const formattedData = data.map(session => {
+          const dateObj = new Date(session.createdAt);
+          const day = dateObj.toLocaleDateString("en-US", { weekday: "short" }); 
+          const date = dateObj.toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit" }); 
+          return {
+            date: `${day} ${date}`, // Combining day and date
+            minutes: session.duration,
+          };
+        });
         setAllMeditationData(formattedData);
         setMeditationData(formattedData.slice(0, sessionsPerPage));
       } catch (error) {
@@ -70,7 +75,7 @@ function Progress() {
               <LineChart data={meditationData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#D7CCC8" />
                 <XAxis dataKey="date" stroke="#6D4C41" />
-                <YAxis stroke="#6D4C41" />
+                <YAxis stroke="#6D4C41" />  
                 <Tooltip contentStyle={{ backgroundColor: "rgba(255, 255, 255, 0.8)", color: "#6D4C41" }} />
                 <Line type="monotone" dataKey="minutes" stroke="#4CAF50" activeDot={{ r: 8 }} />
               </LineChart>

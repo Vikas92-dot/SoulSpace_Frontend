@@ -8,10 +8,12 @@ import api from "../api";
 import { toast, ToastContainer } from "react-toastify";
 import { updateUserProfilePic } from "../redux-config/UserSlice";
 
+
 function UserProfile() {
 
   //Extract user information from store
   let user = useSelector((store) => store.User);
+  let {token} = useSelector((store) => store.User);
   const userId = user.user.id;
   const userName = user.user.name;
   const userEmail = user.user.email;
@@ -30,6 +32,26 @@ function UserProfile() {
       setPreview(URL.createObjectURL(file));
     }
   };
+  const handleDataChange = async (event) => {
+    event.preventDefault();
+    try{
+      console.log(token);
+      
+      const response = await axios.put(`${api.EDIT_USER}/${userId}`,{name,email},{
+        headers: { Authorization: `Bearer ${token}` }
+        });
+      if(response){
+        toast.success("Data Updated successfully");
+        console.log(response.data);
+        
+      }
+    }
+    catch(error){
+      toast.error("Something went wrong!");
+      console.log(error);
+      
+    }
+  }
 
   const handleSaveChanges = async () => {
     const formData = new FormData();
@@ -54,6 +76,7 @@ function UserProfile() {
       }
       
     } catch (error) {
+      toast.error("Upload in Valid format");
       console.error("Error uploading profile:", error);
     }
   };
@@ -77,7 +100,7 @@ function UserProfile() {
               />
               <IconButton color="primary" component="span">
               <Avatar sx={{ width: 150, height: 150 }} src={preview || (userProfilePic ? `${api.BASE_URL}${userProfilePic}` : "")} />
-                <PhotoCamera sx={{ position: "absolute", top: 100, left: 90 }} />
+                <PhotoCamera sx={{ position: "absolute", top: 80, left: 70 }} />
               </IconButton>
             </label>
             <div className="mt-4">
@@ -102,9 +125,19 @@ function UserProfile() {
               variant="contained"
               color="primary"
               className="mt-4 w-full"
-              onClick={handleSaveChanges}
+              onClick={handleDataChange}
+              sx={{mr:30}}
             >
               Save Changes
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              className="mt-4 w-full"
+              onClick={handleSaveChanges}
+              sx={{ml:20}}
+            >
+              Change Image
             </Button>
           </CardContent>
         </Card>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Card, CardContent, CardActions, CircularProgress, Container, Box, Paper } from "@mui/material";
+import { Card, CardContent, CardActions, CircularProgress, Container, Box, Paper, Avatar } from "@mui/material";
 import { Button, TextField, IconButton, Typography } from "@mui/material";
 import { Favorite, ChatBubbleOutline } from "@mui/icons-material";
 import api from "../api";
@@ -81,8 +81,8 @@ const CommunityForum = () => {
     <Box sx={{ display: "flex", background: "#F4F6F8", minHeight: "100vh" }}>
       <Sidebar />
       <Container maxWidth="md" sx={{ mt: 4 }}>
-        <Paper elevation={3} sx={{ p: 3, mb: 3, borderRadius: 2 }}>
-          <Typography variant="h4" gutterBottom>
+        <Paper elevation={3} sx={{ p: 3, mb: 3, borderRadius: 3, backgroundColor: "#FFFFFF" }}>
+          <Typography variant="h4" fontWeight="bold" color="primary" textAlign="center" gutterBottom>
             Community Forum
           </Typography>
           <TextField
@@ -91,7 +91,7 @@ const CommunityForum = () => {
             variant="outlined"
             value={newPost.title}
             onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
-            sx={{ mb: 2 }}
+            sx={{ mb: 2, backgroundColor: "#F9F9F9" }}
           />
           <TextField
             fullWidth
@@ -101,9 +101,17 @@ const CommunityForum = () => {
             label="Share your thoughts..."
             value={newPost.content}
             onChange={(e) => setNewPost({ ...newPost, content: e.target.value })}
-            sx={{ mb: 2 }}
+            sx={{ mb: 2, backgroundColor: "#F9F9F9" }}
           />
-          <Button variant="contained" color="primary" onClick={addPost}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={addPost}
+            sx={{
+              backgroundColor: "#1976D2",
+              "&:hover": { backgroundColor: "#1565C0" },
+            }}
+          >
             Post
           </Button>
         </Paper>
@@ -112,50 +120,87 @@ const CommunityForum = () => {
           <CircularProgress sx={{ display: "block", mx: "auto" }} />
         ) : (
           posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map((post) => (
-            <Card key={post.postId} sx={{ mb: 2, p: 2, borderRadius: 2, boxShadow: 3 }}>
-              <CardContent>
-                <Typography variant="h6">{post.title}</Typography>
-                <Typography variant="body2" color="text.secondary">
-                  By {post.author?.userName || "Unknown"} - {new Date(post.createdAt).toLocaleString()}
-                </Typography>
-                <Typography sx={{ mt: 1 }}>{post.content}</Typography>
-              </CardContent>
-              <CardActions>
-                <IconButton onClick={() => likePost(post.postId)} disabled={likedPosts.includes(post.postId)}>
-                  <Favorite color={likedPosts.includes(post.postId) ? "error" : "inherit"} />
-                </IconButton>
-                <Typography>{post.likeCount}</Typography>
-                <IconButton>
-                  <ChatBubbleOutline />
-                </IconButton>
-                <Typography>{post.commentCount || 0}</Typography>
-              </CardActions>
-              <CardContent>
-                {post.comments?.length > 0 ? (
-                  post.comments.map((comment, index) => (
-                    <Typography key={index} variant="body2" color="text.secondary">
-                      <strong>{comment.userName || "Anonymous"}:</strong> {comment.comment}
-                    </Typography>
-                  ))
-                ) : (
-                  <Typography variant="body2" color="text.secondary">
-                    No comments yet.
-                  </Typography>
-                )}
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  placeholder="Add a comment..."
-                  sx={{ mt: 1 }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      addComment(post.postId, e.target.value);
-                      e.target.value = "";
-                    }
-                  }}
-                />
-              </CardContent>
-            </Card>
+            <Card key={post.postId} sx={{ mb: 3, p: 2, borderRadius: 3, boxShadow: 4, backgroundColor: "#FFFFFF" }}>
+  <CardContent>
+    <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+      <Avatar sx={{ mr: 2 }} alt={post.author?.userName} src={post.author?.avatarUrl} />
+      <Box>
+        <Typography variant="h6" color="primary" fontWeight="bold">
+          {post.author?.userName || "Unknown"}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          {new Date(post.createdAt).toLocaleDateString("en-US", {
+            weekday: "short",
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })}
+        </Typography>
+      </Box>
+    </Box>
+    <Typography
+      variant="h5"
+      color="secondary"
+      fontWeight="bold"
+      sx={{ mt: 1 }} 
+    >
+      {post.title}
+    </Typography>
+    <Typography sx={{ mt: 1 }}>{post.content}</Typography> 
+  </CardContent>
+
+  
+  <Box sx={{ borderTop: "1px solid #e0e0e0", mt: 2 }} />
+
+  <CardActions>
+    <IconButton onClick={() => likePost(post.postId)} disabled={likedPosts.includes(post.postId)}>
+      <Favorite color={likedPosts.includes(post.postId) ? "error" : "inherit"} />
+    </IconButton>
+    <Typography>{post.likeCount}</Typography>
+    <IconButton>
+      <ChatBubbleOutline />
+    </IconButton>
+    <Typography>{post.commentCount || 0}</Typography>
+  </CardActions>
+
+  {/* Line separating the Comment section */}
+  <Box sx={{ borderBottom: "1px solid #e0e0e0", mt: 1 }} />
+
+  <CardContent sx={{ mt: 2 }}>
+    {post.comments?.length > 0 ? (
+      post.comments.map((comment, index) => (
+        <Box key={index} sx={{ display: "flex", mb: 1, alignItems: "center" }}>
+          <Avatar sx={{ mr: 2 }} alt={comment.userName} src={comment.userAvatarUrl || "/default-avatar.png"} />
+          <Box>
+            <Typography variant="body2" color="text.primary" fontWeight="bold">
+              {comment.userName || "Anonymous"}:
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
+              {comment.comment}
+            </Typography>
+          </Box>
+        </Box>
+      ))
+    ) : (
+      <Typography variant="body2" color="text.secondary">
+        No comments yet.
+      </Typography>
+    )}
+    <TextField
+      fullWidth
+      variant="outlined"
+      placeholder="Add a comment..."
+      sx={{ mt: 1 }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          addComment(post.postId, e.target.value);
+          e.target.value = "";
+        }
+      }}
+    />
+  </CardContent>
+</Card>
+
           ))
         )}
       </Container>

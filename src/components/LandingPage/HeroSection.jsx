@@ -64,6 +64,11 @@ function HeroSection() {
                             <Link className="nav-link" to={'/community'} style={{ color: "white", textDecoration: "none" }}
                             onMouseOver={(e) => e.target.style.color = "#FFA500"} onMouseOut={(e) => e.target.style.color = "white"}>Community</Link>
                         </li>
+
+                        <li className="nav-item" style={{ transition: "0.3s" }}>
+                            <Link className="nav-link" to={'/aboutUs'} style={{ color: "white", textDecoration: "none" }}
+                            onMouseOver={(e) => e.target.style.color = "#FFA500"} onMouseOut={(e) => e.target.style.color = "white"}>About Us</Link>
+                        </li>
                         
                         <li className="nav-item" style={{ transition: "0.3s" }}>
                             <Link className="nav-link" to={'/Signin'} style={{ color: "white", textDecoration: "none" }}
@@ -81,7 +86,7 @@ function HeroSection() {
                 <Button variant="contained" color="warning" style={{ margin: "10px" }} component={Link} to="/Meditations">
                     Start Meditating
                 </Button>
-                <Button variant="contained" color="warning" style={{ margin: "10px" }} component={Link} to="/Features">
+                <Button variant="contained" color="warning" style={{ margin: "10px" }} component={Link} to="/aboutUs">
                     Explore Features
                 </Button>
             </div>

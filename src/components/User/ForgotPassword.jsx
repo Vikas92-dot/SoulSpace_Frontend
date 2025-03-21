@@ -1,7 +1,7 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import api from "../api";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 
 function ForgotPassword() {

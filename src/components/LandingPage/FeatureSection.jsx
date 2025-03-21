@@ -65,19 +65,7 @@ function FeatureSection() {
               <Typography variant="body2" sx={{ marginBottom: 2, color: "#555" }}>
                 "Track your mindfulness journey with our Meditation Tracker, set personal goals, and stay consistent on the path to inner peace and well-being."
               </Typography>
-              <Button 
-                size="small" 
-                variant="contained" 
-                sx={{ 
-                  backgroundColor: "#FF8A00", 
-                  color: "white",
-                  '&:hover': {
-                    backgroundColor: "#FFAA33",
-                  }
-                }}
-              >
-                Learn more
-              </Button>
+            
             </CardContent>
           </Card>
 
@@ -111,19 +99,7 @@ function FeatureSection() {
               <Typography variant="body2" sx={{ marginBottom: 2, color: "#555" }}>
                 "Easily record your thoughts, reflections, and daily progress in a private space. Our journaling tool supports your self-discovery with simple, intuitive entries."
               </Typography>
-              <Button 
-                size="small" 
-                variant="contained" 
-                sx={{ 
-                  backgroundColor: "#FF8A00", 
-                  color: "white",
-                  '&:hover': {
-                    backgroundColor: "#FFAA33",
-                  }
-                }}
-              >
-                Learn More
-              </Button>
+              
             </CardContent>
           </Card>
 
@@ -157,19 +133,7 @@ function FeatureSection() {
               <Typography variant="body2" sx={{ marginBottom: 2, color: "#555" }}>
                 "Connect, share, and collaborate with like-minded individuals in our Community Forum. Ask questions, exchange ideas, and gain valuable insights in a supportive environment."
               </Typography>
-              <Button 
-                size="small" 
-                variant="contained" 
-                sx={{ 
-                  backgroundColor: "#FF8A00", 
-                  color: "white",
-                  '&:hover': {
-                    backgroundColor: "#FFAA33",
-                  }
-                }}
-              >
-                Learn More
-              </Button>
+              
             </CardContent>
           </Card>
 

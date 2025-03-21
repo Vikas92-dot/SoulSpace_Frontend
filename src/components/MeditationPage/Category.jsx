@@ -1,4 +1,4 @@
-import { Box, Button, Typography, Card, CardActionArea, CardContent } from "@mui/material";
+import { Box, Button, Typography, Card, CardContent } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "../User/SideBar";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -20,8 +20,9 @@ function Category() {
   const userId = user.user.id;
   const playbackData = useRef([]);
   const startTime = useRef({});
-  
-  
+  const videoRef = useRef({});
+  const intervalRef = useRef(null);
+
   const filteredAudio = AudioList.filter((media) => media.category === selectedCategory);
   const filteredVideo = VideoList.filter((video) => video.category === selectedCategory);
 
@@ -37,6 +38,7 @@ function Category() {
 
   const handlePlay = (id) => {
     startTime.current[id] = Date.now();
+    playbackData.current.push({ userId, title: "Video", description: "Started playing", category: type, duration: 0, notes: "User started playing video" });
   };
 
   const handlePause = (media) => {
@@ -44,7 +46,7 @@ function Category() {
     if (startTime.current[id]) {
       const endTime = Date.now();
       const duration = Math.round((endTime - startTime.current[id]) / 1000);
-      playbackData.current.push({ userId, title, description, category: type, duration, notes: "User listened/watched this session" });
+      playbackData.current.push({ userId, title, description, category: type, duration, notes: "User paused video" });
       toast.success("Meditation Saved successfully");
       startTime.current[id] = null;
     }
@@ -60,7 +62,22 @@ function Category() {
   };
 
   useEffect(() => {
+    // Set interval to track video play state (checking every second)
+    intervalRef.current = setInterval(() => {
+      Object.keys(videoRef.current).forEach((key) => {
+        const video = videoRef.current[key];
+        if (video) {
+          // Check if the iframe is playing or paused
+          const iframe = video.contentWindow;
+          if (iframe) {
+            iframe.postMessage('{"event":"command","func":"getPlayerState","args":""}', '*');
+          }
+        }
+      });
+    }, 1000);
+
     return () => {
+      clearInterval(intervalRef.current);
       savePlaybackData();
     };
   }, []);
@@ -71,25 +88,29 @@ function Category() {
       <Sidebar />
       <Box sx={{ flexGrow: 1, padding: 4, background: "linear-gradient(to bottom, #FFF8E1, #FFD54F)", minHeight: "100vh" }}>
         {/* Back Button */}
-          <Button
-              startIcon={<ArrowBack />}
-              onClick={() => navigate(-1)}
-              sx={{
-                  position: "absolute",
-                  top: 25,
-                  left: "20%"
-              }}
-              variant="contained"
-              color="inherit"
-          >
-              Back
-          </Button>
-        
-        <Typography variant="h4" sx={{ textAlign: "center", fontWeight: "bold", mt: 5 }}>Choose Meditation Category</Typography>
-        
+        <Button
+          startIcon={<ArrowBack />}
+          onClick={() => navigate(-1)}
+          sx={{
+            position: "absolute",
+            top: 25,
+            left: "20%",
+          }}
+          variant="contained"
+          color="inherit"
+        >
+          Back
+        </Button>
+
+        <Typography variant="h4" fontWeight="bold" color="#F57F17" textAlign="center" gutterBottom>
+          Choose Meditation Category
+        </Typography>
+
         <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mt: 3 }}>
           {categories.map((category) => (
-            <Button key={category} variant={selectedCategory === category ? "contained" : "outlined"} onClick={() => handleCategoryClick(category)}>{category}</Button>
+            <Button key={category} variant={selectedCategory === category ? "contained" : "outlined"} onClick={() => handleCategoryClick(category)}>
+              {category}
+            </Button>
           ))}
         </Box>
 
@@ -110,13 +131,17 @@ function Category() {
               <Card key={media.id} sx={{ padding: 2, borderRadius: "12px", boxShadow: 5, "&:hover": { transform: "scale(1.05)" } }}>
                 <CardContent>
                   <Typography variant="h5">{media.title}</Typography>
-                  <iframe 
-                    width="100%" 
-                    height="300px" 
-                    src={convertToEmbedUrl(media.src)} 
-                    title={media.title} 
-                    allowFullScreen>
-                  </iframe>
+                  <iframe
+                    id={media.id}
+                    ref={(ref) => (videoRef.current[media.id] = ref)}
+                    width="100%"
+                    height="300px"
+                    src={convertToEmbedUrl(media.src)}
+                    title={media.title}
+                    allowFullScreen
+                    onPlay={() => handlePlay(media.id)}
+                    onPause={() => handlePause(media)}
+                  ></iframe>
                 </CardContent>
               </Card>
             ))
@@ -130,120 +155,3 @@ function Category() {
 }
 
 export default Category;
-
-
-
-
-// import { Box, Button, Typography, Card, CardActionArea, CardContent } from "@mui/material";
-// import { useNavigate, useParams } from "react-router-dom";
-// import Sidebar from "../User/SideBar";
-// import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-
-// function Category() {
-//   const { type } = useParams(); // "audio" or "video"
-//   const navigate = useNavigate();
-
-//   const categories = ["Stress", "Anxiety", "Focus", "Body Scan"];
-//   const gradientColors = "linear-gradient( #FF6F61, #FF8C42)";
-
-//   return (
-//     <div style={{ display: "flex" }}>
-//       <Sidebar />
-//       <Box
-//         sx={{
-//           display: "flex",
-//           flexDirection: "column",
-//           alignItems: "center",
-//           height: "100vh",
-//           background: "linear-gradient(to bottom, #FFF8E1, #FFD54F)",
-//           flexGrow: 1,
-//           padding: 4,
-//         }}
-//       >
-//         {/* Back Button */}
-//         <Button
-//           startIcon={<ArrowBackIcon />}
-//           onClick={() => navigate(-1)}
-//           sx={{
-//             position: "absolute",
-//             top: 20,
-//             left: "20%",
-//             bgcolor: "#1E88E5",
-//             color: "white",
-//             "&:hover": { bgcolor: "#1565C0" },
-//             padding: "10px 20px",
-//             borderRadius: "12px",
-//             fontSize: "16px",
-//           }}
-//         >
-//           Back
-//         </Button>
-
-//         <Typography
-//           sx={{
-//             mt: 15,
-//             color: "#333",
-//             fontSize: "2.5rem",
-//             fontWeight: "bold",
-//             textTransform: "uppercase",
-//             letterSpacing: "2px",
-//             textAlign: "center",
-//             background: "linear-gradient(135deg, #f12711, #f5af19)",
-//             WebkitBackgroundClip: "text",
-//             WebkitTextFillColor: "transparent",
-//             paddingBottom: "10px",
-//           }}
-//           variant="h4"
-//           gutterBottom
-//         >
-//           Choose Your Category
-//         </Typography>
-//         <Box
-//           sx={{
-//             display: "grid",
-//             gridTemplateColumns: { xs: "2fr", sm: "1fr 1fr" },
-//             gap: 4,
-//             mt: 4,
-//           }}
-//         >
-//           {categories.map((category, index) => (
-//             <Card
-//               key={category}
-//               sx={{
-//                 width: 260,
-//                 borderRadius: "15px",
-//                 boxShadow: 5,
-//                 transition: "0.3s",
-//                 background: "linear-gradient(135deg, #ffffff, #f9f9f9)",
-//                 "&:hover": { transform: "scale(1.08)", boxShadow: 6 },
-//               }}
-//             >
-//               <CardActionArea onClick={() => navigate(`/Meditations/type/${type}/${category}`)}>
-//                 <CardContent sx={{ textAlign: "center",  }}>
-//                   <Button
-//                     fullWidth
-//                     variant="contained"
-//                     sx={{
-//                       background: gradientColors,
-//                       color: "white",
-//                       fontSize: "18px",
-//                       fontWeight: "bold",
-//                       borderRadius: "10px",
-//                       textTransform: "uppercase",
-//                       letterSpacing: "1px",
-//                       "&:hover": {  transform: "scale(1.05)" },
-//                     }}
-//                   >
-//                     {category}
-//                   </Button>
-//                 </CardContent>
-//               </CardActionArea>
-//             </Card>
-//           ))}
-//         </Box>
-//       </Box>
-//     </div>
-//   );
-// }
-
-// export default Category;

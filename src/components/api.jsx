@@ -7,6 +7,7 @@ export default{
     "FORGOT_PASSWORD": "http://localhost:5000/users/forgotPassword",
     "USER_LOGOUT":"http://localhost:5000/users/logout",
     "FETCH_USER": "http://localhost:5000/users/getProfile",
+    "EDIT_USER": "http://localhost:5000/users/editProfile",
     "UPLOAD_PIC": "http://localhost:5000/users/upload",
 
     "MEDITATION_TRACKER": "http://localhost:5000/meditation/viewProgress",

@@ -36,14 +36,11 @@ function Register() {
             toast.error("Password must be at least 6 characters.");
             return;
         }
-        if (!level) {
-            toast.error("Please select a level.");
-            return;
-        }
+        
 
-        axios.post(api.USER_REGISTER, { name, email, password, level })
+        axios.post(api.USER_REGISTER, { name, email, password })
             .then((response) => {
-                toast.success("Registration successful!");
+                toast.success("Verify With OTP!");
 
                 setTimeout(()=>{
                     navigate(`/Verify-otp/${email}`);
@@ -95,15 +92,15 @@ function Register() {
                                         <label className="form-label">Your Password</label>
                                         <input onChange={(event) => setPassword(event.target.value)} type="password" className="form-control" required />
                                     </div>
-                                    <label>Level</label>
-                                    <div className="mb-4">
+                                    {/* <label>Level</label> */}
+                                    {/* <div className="mb-4">
                                         <select onChange={(event) => setLevel(event.target.value)} className="form-select" required>
                                             <option value="">Select Level</option>
                                             <option value="beginner">Beginner</option>
                                             <option value="intermediate">Intermediate</option>
                                             <option value="advanced">Advanced</option>
                                         </select>
-                                    </div>
+                                    </div> */}
                                     <div className="text-center">
                                         <button type="submit" className="btn btn-warning btn-lg text-dark">Submit</button>
                                     </div>

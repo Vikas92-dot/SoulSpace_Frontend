@@ -88,13 +88,13 @@ function JournalEntry() {
     <Box display="flex" minHeight="100vh" bgcolor="#E3F2FD">
       <SideBar />
       {/* <AudioRecorder/> */}
-      <Box flexGrow={1} maxWidth="700px" mx="auto" my={5} p={3} bgcolor="#ffffff" borderRadius={5} boxShadow={3}>
+      <Box flexGrow={1} maxWidth="700px" mx="auto" my={5} p={3} bgcolor="#ffffff" borderRadius={5} boxShadow={3} sx={{backgroundColor:"linear-gradient(to bottom, #FFF8E1, #FFD54F)"}}>
         <ToastContainer />
         <Button variant="contained" color="primary" startIcon={<ArrowBackIcon />} onClick={() => navigate(-1)}>
           Back
         </Button>
         <Typography variant="h4" fontWeight="bold" color="primary" textAlign="center" gutterBottom>
-          Your Journal
+          Your Personal Journal
         </Typography>
         <Paper elevation={3} sx={{ p: 3, mb: 3, borderRadius: 3 }}>
           <form onSubmit={handleSubmit}>
